@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arise: 77-day system</title>
+<style>
+:root{--bg:#07051A;--bg2:#1C1040;--pn:rgba(18,12,48,.82);--fg:#EAF0FF;--mut:#9297C6;--ln:rgba(183,156,255,.4);--lav:#B79CFF;--acc:var(--lav);--blue:#3FA9FF;--warn:#FFD34D;--bad:#FF4D6A;--ok:#5CFFB0;--on:#1A0F3C;--sf:Optima,"Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+[hidden]{display:none!important}
+html{background:#07051A;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100vh;color:var(--fg);font:400 16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(ellipse at 50% -8%,var(--bg2),var(--bg) 60%) fixed var(--bg)}
+body.pen{--ln:rgba(255,77,106,.6);--lav:#FF7A90;--blue:#FF4D6A}
+#v{max-width:520px;margin:0 auto;padding:18px 14px 120px}
+h1,h2,h3,.th,.tbox,.sec,.tb{font-family:var(--sf);font-weight:400;text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:42px;line-height:1.05;margin:18px 0 10px}h1 em{font-style:normal;color:var(--lav)}
+h2{font-size:23px;margin:0 0 12px}h2 span{color:var(--lav)}h3{font-size:20px;margin:0 0 4px}
+p{margin:0 0 10px}.mut,.fix{color:var(--mut)}.fix{font-size:14px;margin:4px 0}.ctr{text-align:center}
+.mt{font:italic 19px var(--sf);margin:0}
+.w{position:relative;background:var(--pn);border:1px solid var(--ln);padding:14px;margin-bottom:14px;box-shadow:inset 0 0 22px rgba(183,156,255,.07);backdrop-filter:blur(6px);animation:win .4s cubic-bezier(.2,.8,.2,1) both}
+.w::before{content:"";position:absolute;inset:3px;border:1px solid rgba(183,156,255,.14);pointer-events:none}
+.w.warn{border-color:var(--warn)}.w.bad{border-color:var(--bad);box-shadow:0 0 22px rgba(255,77,106,.4)}
+.th{font-size:14px;color:var(--lav);margin-bottom:10px;text-shadow:0 0 10px rgba(183,156,255,.5)}.th em{font-style:normal;color:var(--warn);margin-left:8px}
+.fr{position:relative;padding:18px 14px;margin:6px 4px 16px;border:1px solid rgba(63,169,255,.4);box-shadow:0 0 24px rgba(63,169,255,.3),inset 0 0 26px rgba(63,169,255,.1);animation:win .4s both;
+background:linear-gradient(var(--blue),var(--blue)) top right/24px 3px no-repeat,linear-gradient(var(--blue),var(--blue)) top right/3px 24px no-repeat,linear-gradient(var(--blue),var(--blue)) bottom left/24px 3px no-repeat,linear-gradient(var(--blue),var(--blue)) bottom left/3px 24px no-repeat,linear-gradient(rgba(4,8,28,.9),rgba(4,6,22,.92))}
+.fr::before,.fr::after{content:"";position:absolute;width:24px;height:24px;border:3px solid var(--blue);filter:drop-shadow(0 0 6px var(--blue))}
+.fr::before{top:-4px;left:-4px;border-right:0;border-bottom:0}.fr::after{bottom:-4px;right:-4px;border-left:0;border-top:0}
+.tbox{width:max-content;max-width:100%;margin:0 auto 12px;padding:6px 30px;font-size:24px;border:1px solid rgba(63,169,255,.6);background:rgba(63,169,255,.08);color:#CDE8FF;text-shadow:0 0 12px var(--blue)}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-bottom:14px;gap:6px}.meta small{display:block;color:var(--mut);font-size:11px;letter-spacing:.14em}.meta b{font-size:15px}.lvl{font:40px var(--sf)!important;color:#CDE8FF;text-shadow:0 0 14px var(--blue)}
+.box{border:1px solid rgba(63,169,255,.35);background:rgba(63,169,255,.04);padding:12px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+.hm{display:flex;gap:8px;align-items:center}.hm>div{flex:1}.hm span{font-size:13px;letter-spacing:.1em}.hm em{font-style:normal;color:var(--mut);font-size:12px}
+.ic{width:22px;height:22px;flex:none;color:#CDE8FF;filter:drop-shadow(0 0 5px var(--blue))}
+.sx{display:flex;align-items:center;gap:8px;padding:5px 0}.sx span{width:38px;font-weight:700;letter-spacing:.06em}.sx b{flex:1;color:#CDE8FF;font-size:18px}
+.bar{height:8px;border-radius:2px;background:rgba(146,151,198,.22);overflow:hidden;margin-top:3px}
+.bar i{display:block;height:100%;transition:width .8s cubic-bezier(.2,.8,.2,1);background:linear-gradient(90deg,var(--blue),var(--lav))}.bar.hp i{background:linear-gradient(90deg,#FF4D6A,#FF9A6A)}.bar.mp i{background:linear-gradient(90deg,#3FA9FF,#8A7BFF)}
+.bl{display:grid;grid-template-columns:1fr 40px;gap:2px 8px;font-size:13px;margin-bottom:8px}.bl span{grid-column:1/3}.bl em{font-style:normal;color:var(--mut);text-align:right}
+.pc{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;background:rgba(48,28,110,.35);border:1px solid var(--ln);padding:12px 14px;margin-bottom:10px;color:var(--fg);font:inherit;position:relative;transition:opacity .4s,transform .15s}
+.pc.dn{opacity:.5}.pc.dn b{text-decoration:line-through}.pb{min-width:0}.pb b{display:block}.pb small{display:block;color:var(--mut)}.cdt{font:700 22px ui-monospace,Menlo,monospace}
+.pr{display:flex;align-items:center;gap:8px;white-space:nowrap}.pr span,.gi>span:nth-child(2){font:600 14px ui-monospace,Menlo,monospace}
+.sec{margin:20px 0 10px;font-size:15px;color:var(--lav)}
+.ad{width:34px;height:34px;border-radius:50%;border:1px solid var(--lav);background:rgba(183,156,255,.15);color:var(--lav);font-size:20px;line-height:1;padding:0;box-shadow:0 0 10px rgba(183,156,255,.3)}
+.ib{background:none;border:0;padding:2px;display:grid}.ib .ic{width:20px;height:20px;filter:none;color:var(--mut)}
+.q{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(146,151,198,.18)}.qb{flex:1;min-width:0}.qb small{display:block;color:var(--mut)}
+button{font:600 14px system-ui,sans-serif;cursor:pointer;transition:transform .15s,box-shadow .2s}button:active{transform:scale(.95)}
+.b{border:0;border-radius:8px;padding:11px 18px;background:var(--lav);color:var(--on);box-shadow:0 0 14px rgba(183,156,255,.4)}
+.pill{display:block;width:100%;border:0;border-radius:99px;padding:15px;background:var(--lav);color:var(--on);font:600 17px system-ui;box-shadow:0 0 22px rgba(183,156,255,.45);margin-top:18px}
+.g{border:1px solid var(--ln);border-radius:6px;padding:8px 12px;background:none;color:var(--fg)}.wide{width:100%;margin-top:14px}
+.row{display:flex;gap:10px;align-items:flex-end;margin:10px 0}.row>label{flex:1}
+label{display:block;font-size:13px;color:var(--mut);margin-top:8px}.ck{display:flex;gap:10px;align-items:center;color:var(--fg);font-size:15px}
+input[type=text],input[type=number],input[type=time],select,textarea{width:100%;font:inherit;padding:9px;margin-top:4px;border-radius:4px;border:1px solid var(--ln);background:rgba(5,3,20,.6);color:var(--fg)}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--lav)}input[type=range]{width:100%;accent-color:var(--lav)}
+.nv{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.nv div{text-align:center}.nv small{display:block;color:var(--mut)}
+.gr{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}
+.c{aspect-ratio:1;display:grid;place-items:center;font-size:10px;border:1px solid rgba(146,151,198,.3);border-radius:3px;color:var(--mut)}
+.c.ok{background:var(--lav);color:var(--on);box-shadow:0 0 8px rgba(183,156,255,.5);font-weight:700}.c.sh{background:var(--blue);color:#fff}.c.ms{border-color:var(--bad)}.c.nw{outline:2px solid var(--warn)}.c.mi{border-color:var(--lav);border-width:2px}
+.stt{display:flex;gap:8px;margin-bottom:12px;color:var(--mut);font-size:11px;letter-spacing:.1em}.stt div{flex:1;text-align:center}.stt b{display:block;font-size:24px;color:var(--fg)}
+.bd{display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border:1px solid var(--ln);border-radius:99px;font-size:13px;color:var(--mut)}.bd.on{color:var(--on);background:var(--lav)}
+.bk{padding:10px 0;border-bottom:1px solid rgba(146,151,198,.18)}.bk small{color:var(--mut)}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:8px}.it{border:1px solid var(--ln);padding:8px}.it small{display:block;color:var(--mut)}.it.Rare{border-color:var(--blue)}.it.Epic{border-color:var(--lav)}
+.big{font:700 60px/1.1 ui-monospace,Menlo,monospace;text-align:center;margin:6px 0;font-variant-numeric:tabular-nums}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:2px;padding:6px;background:rgba(20,12,52,.9);border:1px solid var(--ln);backdrop-filter:blur(12px);z-index:3;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+nav button{background:none;border:0;padding:10px 15px;color:var(--mut);display:grid;place-items:center}nav button.on{color:var(--lav);background:rgba(183,156,255,.14);box-shadow:0 0 14px rgba(183,156,255,.3)}nav .ic{width:24px;height:24px;filter:none;color:inherit}
+.ov{position:fixed;inset:0;background:rgba(5,3,20,.84);overflow:auto;padding:16px;z-index:6;display:grid;align-content:center;backdrop-filter:blur(5px)}
+.ov .w{max-width:420px;margin:0 auto 12px;width:100%;text-align:center}.ov .w.cd{text-align:left}
+.qi{position:relative;max-width:420px;width:100%;margin:0 auto;padding:22px 18px;background:#0E0928;border:1px solid var(--ln);box-shadow:0 0 30px rgba(183,156,255,.25),inset 0 0 0 4px #0E0928,inset 0 0 0 5px rgba(183,156,255,.22);animation:win .35s both}
+.x{position:absolute;top:6px;right:10px;background:none;border:0;color:var(--fg);font-size:26px}
+.qh{display:flex;justify-content:center;gap:8px;margin-bottom:14px}.ib2{border:1px solid var(--ln);padding:6px;display:grid}.ib2 .ic{width:20px;height:20px;filter:none;color:var(--lav)}.tb{border:1px solid var(--ln);padding:6px 20px;text-shadow:0 0 10px var(--lav)}
+.qm{text-align:center;font-size:14px}.gl2{text-align:center;text-decoration:underline;font-size:24px;margin:10px 0 14px;text-shadow:0 0 10px var(--lav)}
+.gi{display:flex;align-items:center;gap:10px;padding:8px 0}.gi>span:first-child{flex:1}.chk{width:34px;text-align:center;color:var(--ok)}.wn{font-size:12px;text-align:center;margin:16px 0 0}
+.hero{margin:-18px -14px 0;position:relative}.hero svg{width:100%;height:auto;display:block;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+#tt{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:10px;right:10px;z-index:9;pointer-events:none}
+.ts{max-width:480px;margin:0 auto 6px;padding:10px 14px;background:rgba(18,12,48,.95);border:1px solid var(--lav);box-shadow:0 0 16px rgba(183,156,255,.35);animation:sl .3s ease both;font-size:14px}.ts.warn{border-color:var(--warn)}.ts.bad{border-color:var(--bad)}
+#boot{position:fixed;inset:0;background:var(--bg);z-index:20;display:grid;place-items:center;color:var(--lav);letter-spacing:.3em;text-align:center;font-family:var(--sf);animation:bt 1.4s ease forwards;pointer-events:none}
+@keyframes win{from{opacity:0;transform:translateY(10px) scale(.98)}}
+@keyframes bt{0%,60%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes sl{from{transform:translateY(-30px);opacity:0}}
+@keyframes pl{50%{box-shadow:0 0 30px var(--bad)}}
+body.pen .qpen{animation:pl 1.6s infinite}
+.figs{display:flex;gap:8px;margin:8px 0}.fig{flex:1;margin:0;min-width:0}.fig svg{width:100%;height:auto;display:block;background:rgba(5,3,20,.6);border-radius:6px}.fig figcaption{font-size:12px;color:var(--mut);text-align:center}
+.fg path{fill:none;stroke:var(--fg);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}.hd{fill:var(--bg);stroke:var(--fg);stroke-width:4}.pl{fill:var(--warn);stroke:var(--fg);stroke-width:2}.fs{fill:var(--bad);stroke:var(--fg);stroke-width:2}.gl{stroke:var(--mut);stroke-width:2}.ob{fill:var(--ln);stroke:var(--mut);stroke-width:2}
+ol{margin:0 0 8px;padding-left:20px}
+@media (prefers-reduced-motion:reduce){.w,.fr,.qi,.ts{animation:none}}
+.w,.pc,.qi,.ov>.w,.fr{border-radius:16px}.w::before{border-radius:13px}.b,.g,input,select,textarea{border-radius:12px}.pill,.ad{border-radius:99px}nav{border-radius:22px}.box,.it,.tbox,.tb,.ib2{border-radius:10px}.fig svg{border-radius:12px}.ts{border-radius:12px}
+.fr::before{border-top-left-radius:14px}.fr::after{border-bottom-right-radius:14px}
+.ov{z-index:10}#tt{z-index:12}.ov>.w{border-color:rgba(63,169,255,.5);box-shadow:0 0 28px rgba(63,169,255,.35)}.pp{max-width:420px;width:100%;margin:0 auto}.pp .row{margin-top:14px}.pp label{text-align:left}.pp small{color:var(--mut)}
+.av{display:block;width:96px;height:96px;object-fit:cover;border-radius:50%;margin:0 auto 10px;border:2px solid var(--blue);box-shadow:0 0 16px var(--blue)}
+.strip{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 12px;position:relative;scrollbar-width:none}.strip::-webkit-scrollbar{display:none}
+.dc{flex:none;width:46px;padding:7px 0;border-radius:14px;border:1px solid rgba(146,151,198,.3);background:none;color:var(--mut);display:grid;place-items:center;font-size:15px}.dc small{font-size:10px;letter-spacing:.1em}
+.dc.ok{background:rgba(183,156,255,.22);color:var(--fg)}.dc.sh{background:rgba(63,169,255,.22);color:var(--fg)}.dc.ms{border-color:var(--bad)}.dc.td{box-shadow:0 0 0 1px var(--warn)}.dc.sel{background:var(--lav);color:var(--on);border-color:var(--lav)}
+.ad.go{font-size:14px;padding-left:3px}
+.ssv{position:fixed;inset:0;z-index:9;overflow:auto;background:radial-gradient(ellipse at 50% -8%,var(--bg2),var(--bg) 60%) var(--bg);padding-top:env(safe-area-inset-top,0px)}
+.ssw{max-width:520px;margin:0 auto;padding:16px 16px 40px}.sst{display:flex;justify-content:space-between;color:var(--mut);font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.sfs{width:100%;max-height:250px;background:rgba(5,3,20,.6);border-radius:18px;margin:12px 0}.bcs{width:220px;display:block;margin:14px auto}.big2{font:600 24px var(--sf);text-align:center}
+.x2{background:none;border:0;color:var(--mut);text-decoration:underline;display:block;margin:22px auto 0}.go2{animation:win .35s both}
+.rdw{position:fixed;inset:0;z-index:8;display:flex;flex-direction:column;background:#fff;color:#111}.rdw.dark{background:#0B0B12;color:#D8DAE8}.rdw.sepia{background:#F4ECD8;color:#3B2F1E}
+.rdb{display:flex;gap:8px;align-items:center;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:rgba(128,128,160,.15)}.rdb b{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rdc{flex:1;overflow:auto;padding:18px;line-height:1.7;max-width:720px;width:100%;margin:0 auto;font-family:Georgia,serif}.rdc h3{font-family:var(--sf);margin:18px 0 6px}.rdc canvas{display:block;margin:0 auto}.rdw.dark canvas{filter:invert(1) hue-rotate(180deg)}
+.rdn{display:flex;justify-content:center;gap:16px;align-items:center;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(128,128,160,.15)}.rdw .g{color:inherit;border-color:rgba(128,128,160,.5)}.rdw .b{background:#B79CFF;color:#1A0F3C}
+.chs{width:100%;height:auto;display:block}.lg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin:8px 0}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.tl p{margin:0 0 8px;font-size:14.5px}.tl b{color:var(--lav)}
+nav button{padding:10px 10px}details{border-top:1px solid rgba(146,151,198,.18);padding:6px 0}summary{cursor:pointer;padding:6px 0}summary small{display:block}
+.stt b{font-size:20px;white-space:nowrap}nav button{padding:10px 8px}.rdw{z-index:9}
+#v>*{animation:win .45s cubic-bezier(.2,.8,.2,1) both}#v>*:nth-child(2){animation-delay:.05s}#v>*:nth-child(3){animation-delay:.1s}#v>*:nth-child(4){animation-delay:.15s}#v>*:nth-child(5){animation-delay:.2s}#v>*:nth-child(6){animation-delay:.25s}#v>*:nth-child(n+7){animation-delay:.3s}
+.bar i{position:relative;overflow:hidden}.bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:shm 2.6s infinite}@keyframes shm{to{transform:translateX(100%)}}
+
+.seg{display:flex;gap:6px;margin-bottom:12px}.seg button{flex:1;border:1px solid var(--ln);background:none;color:var(--mut);padding:10px;border-radius:12px}.seg button.on{background:var(--lav);color:var(--on);border-color:var(--lav)}
+.hud{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;letter-spacing:.06em}.hud .bar{flex:1}
+.tr{display:flex;gap:12px;align-items:center;padding:10px 12px;margin-bottom:8px;border:1px solid rgba(146,151,198,.25);border-radius:16px;background:rgba(48,28,110,.25);transition:all .3s}.tr.now{border-color:var(--warn);box-shadow:0 0 16px rgba(255,211,77,.3)}.tr.dn{opacity:.5}
+.tt2{font:600 15px ui-monospace,Menlo,monospace;color:var(--lav);width:50px}.tb2{flex:1;min-width:0}.tb2 small{display:block;color:var(--mut)}
+.rdc.pg{columns:1;column-gap:36px;column-fill:auto;overflow-x:auto;overflow-y:hidden;max-width:none}
+.rdc h4{margin:18px 0 6px;font-family:var(--sf);color:#B79CFF}.rdc ul{padding-left:20px}.rdc li{margin:4px 0}.rdc pre{background:rgba(128,128,160,.15);padding:10px;border-radius:10px;overflow:auto;font-size:.85em}.rdc code{background:rgba(128,128,160,.2);padding:0 4px;border-radius:4px}.rdc details{border-top:1px solid rgba(128,128,160,.3);padding:6px 0}.rdc summary{cursor:pointer}.rdc math{font-size:1.08em}.rdc math[display=block]{display:block;margin:8px 0;text-align:center}
+@media (prefers-reduced-motion:reduce){.bar i::after,body::after{animation:none}}
+.rdb{flex-wrap:wrap}.rdb b{order:5;flex-basis:100%;font-size:13px;opacity:.8}.tag.Martial{color:#FF9A6A}</style>
+</head>
+<body>
+<div id="boot"><div><p>[ SYSTEM ]</p><p>PLAYER DETECTED</p></div></div>
+<div id="tt"></div>
+<main id="v"></main>
+<nav hidden></nav>
+<div id="ss" class="ssv" hidden></div><div id="rd" class="rdw" hidden></div><div id="o" class="ov" hidden></div>
+<script type="text/plain" id="notes">
+@@ Foundations of Computational Reasoning
+== Module 1: Linear Algebra
+# Key ideas
+- A matrix is in **row echelon form (REF)** when zero rows are at the bottom and each leading entry is to the right of the one above it. **RREF** also needs every leading entry to be 1 and the only nonzero entry in its column.
+- **Rank** = number of nonzero rows in an echelon form (the number of independent rows).
+- **Consistency (Rouché–Capelli):** $Ax=b$ has a solution only if $\operatorname{rank}(A)=\operatorname{rank}([A|b])$. If rank $=n$ (unknowns) the solution is unique; if rank $<n$ there are infinitely many.
+- **Gaussian elimination:** forward elimination to REF, then back-substitution. **Gauss–Jordan:** continue to RREF and read the answer directly.
+- **Dense** matrices store all $m\times n$ entries, $O(mn)$ memory. **Sparse** matrices are mostly zeros, so storing only the $nnz$ nonzeros (COO or CSR) costs $O(nnz)$.
+# Worked example
+Solve $x+y=3,\ 2x-y=0$. Add the equations: $3x=3$, so $x=1$, $y=2$. Rank of the coefficient matrix is 2 = number of unknowns, so the solution is unique.
+# Practice
+Q: Find the rank of $\begin{bmatrix}1&2\\2&4\end{bmatrix}$. ::: Row 2 $=2\times$ row 1, so after elimination one zero row remains: rank $=1$.
+Q: When is a system with 3 equations and 3 unknowns inconsistent? ::: When $\operatorname{rank}(A)<\operatorname{rank}([A|b])$, for example a row $[0\ 0\ 0\,|\,5]$.
+== Module 2: Vector Space
+# Key ideas
+- A **vector space** is a set closed under addition and scalar multiplication that has a zero vector and additive inverses. A **subspace** must contain $0$ and be closed under both operations.
+- **Basis:** linearly independent vectors that span the space; the number of them is the **dimension**.
+- **Linear transformation:** $T(au+bv)=aT(u)+bT(v)$. Every one is a matrix multiplication $T(x)=Ax$.
+- **Eigenvalues:** $Av=\lambda v$ with $v\ne 0$, found from $\det(A-\lambda I)=0$. Sum of eigenvalues $=\operatorname{trace}(A)$, product $=\det(A)$.
+- **Diagonalization:** if $A$ has $n$ independent eigenvectors, $A=PDP^{-1}$ and $A^k=PD^kP^{-1}$.
+- **SVD:** $A=U\Sigma V^{T}$ with $\sigma_i=\sqrt{\lambda_i(A^TA)}$. Keeping the $k$ largest singular values gives the best rank-$k$ approximation; variance kept is $\sum_{i\le k}\sigma_i^2/\sum_i\sigma_i^2$.
+# Worked example
+$A=\begin{bmatrix}4&1\\2&3\end{bmatrix}$: $\lambda^2-7\lambda+10=0$, so $\lambda=5,2$. For $\lambda=5$: $v=(1,1)$. For $\lambda=2$: $v=(1,-2)$.
+# Practice
+Q: Eigenvalues of a triangular matrix? ::: The diagonal entries.
+Q: Why use SVD for compression? ::: Small singular values carry little variance, so dropping them reduces storage with small error.
+== Module 3: Differential Calculus
+# Key ideas
+- **Partial derivative:** differentiate with respect to one variable, others fixed: $f_x,\ f_y$. Mixed partials are equal when continuous: $f_{xy}=f_{yx}$.
+- **Chain rule:** $\dfrac{dz}{dt}=\dfrac{\partial z}{\partial x}\dfrac{dx}{dt}+\dfrac{\partial z}{\partial y}\dfrac{dy}{dt}$. This is the core of backpropagation.
+- **Gradient:** $\nabla f=(f_x,f_y)$ points in the direction of steepest increase. **Directional derivative:** $D_uf=\nabla f\cdot u$ for a unit vector $u$.
+- **Critical points:** $\nabla f=0$. **Second-derivative test:** $D=f_{xx}f_{yy}-f_{xy}^2$. If $D>0$ and $f_{xx}>0$: minimum. $D>0$ and $f_{xx}<0$: maximum. $D<0$: saddle.
+- **Gradient descent:** $x_{k+1}=x_k-\eta\nabla f(x_k)$.
+# Worked example
+$f=x^2+y^2-2x$: $\nabla f=(2x-2,\,2y)=0$ gives $(1,0)$. $f_{xx}=2,\ f_{yy}=2,\ f_{xy}=0$, so $D=4>0$: a minimum.
+# Practice
+Q: Direction of fastest decrease of $f$? ::: $-\nabla f$.
+Q: Find $f_x$ for $f=x^2y+\sin y$. ::: $2xy$.
+== Module 4: Ordinary Differential Equations
+# Key ideas
+- For $ay''+by'+cy=0$ solve the **characteristic equation** $ar^2+br+c=0$.
+- Distinct real roots: $y=C_1e^{r_1x}+C_2e^{r_2x}$. Repeated root: $y=(C_1+C_2x)e^{rx}$. Complex roots $\alpha\pm i\beta$: $y=e^{\alpha x}(C_1\cos\beta x+C_2\sin\beta x)$.
+- **Non-homogeneous:** $y=y_h+y_p$. **Undetermined coefficients:** for $e^{kx}$ try $Ae^{kx}$ (multiply by $x$ if $k$ is already a root); for a polynomial try a polynomial of the same degree.
+- **Stability:** all roots with negative real part: solutions decay (stable). Any positive real part: grows (unstable). **Resonance:** forcing at the natural frequency makes the amplitude grow like $x\sin\omega x$.
+# Worked example
+$y''-3y'+2y=0$: $r^2-3r+2=0$, $r=1,2$, so $y=C_1e^{x}+C_2e^{2x}$. For $y''+y=e^{2x}$: try $y_p=Ae^{2x}$, $4A+A=1$, $A=\frac{1}{5}$.
+# Practice
+Q: Roots $-1\pm 2i$: what is the solution and is it stable? ::: $e^{-x}(C_1\cos2x+C_2\sin2x)$. Stable, since the real part is $-1$.
+@@ Engineering Physics for Computer Science
+== Module 1: Electromagnetism
+# Key ideas
+- **Faraday:** $\oint\vec E\cdot d\vec l=-\dfrac{d\Phi_B}{dt}$. **Ampère–Maxwell:** $\oint\vec B\cdot d\vec l=\mu_0\left(I+\epsilon_0\dfrac{d\Phi_E}{dt}\right)$. The second term (displacement current) is Maxwell’s addition.
+- **Free space:** $\nabla\cdot\vec E=0,\ \nabla\cdot\vec B=0,\ \nabla\times\vec E=-\dfrac{\partial\vec B}{\partial t},\ \nabla\times\vec B=\mu_0\epsilon_0\dfrac{\partial\vec E}{\partial t}$.
+- **Wave equation:** taking the curl of the curl gives $\nabla^2\vec E=\mu_0\epsilon_0\dfrac{\partial^2\vec E}{\partial t^2}$, a wave of speed $c=\dfrac{1}{\sqrt{\mu_0\epsilon_0}}$.
+- **Poynting vector:** $\vec S=\dfrac{1}{\mu_0}\vec E\times\vec B$ is the power per unit area carried by the wave.
+- **Magnetic materials:** diamagnetic (weak repulsion, $\chi<0$), paramagnetic (weak attraction, thermal agitation), ferromagnetic (strong, domains aligned by the **exchange interaction**, lost above the Curie temperature).
+- **Applications:** Wi-Fi (2.4 and 5 GHz) and Bluetooth (2.4 GHz) are electromagnetic waves. **EMI** disturbs circuits; **shielding** with conductive enclosures (Faraday cage) blocks it. Skin depth $\delta=\sqrt{2/\omega\mu\sigma}$.
+# Practice
+Q: What did Maxwell add to Ampère’s law and why? ::: The displacement current $\epsilon_0\,d\Phi_E/dt$, so that a changing electric field also produces a magnetic field and waves are possible.
+Q: Find $c$ from $\mu_0=4\pi\times10^{-7}$ and $\epsilon_0=8.85\times10^{-12}$. ::: $c\approx3\times10^{8}$ m/s.
+== Module 2: Semiconductor Physics and Devices
+# Key ideas
+- **Intrinsic:** $n=p=n_i=\sqrt{N_cN_v}\,e^{-E_g/2kT}$, Fermi level near the middle of the gap. **n-type:** donors push $E_F$ toward $E_c$. **p-type:** acceptors push $E_F$ toward $E_v$. Mass-action law: $np=n_i^2$.
+- **Electron density:** $n=N_c\,e^{-(E_c-E_F)/kT}$.
+- **p–n junction:** diffusion leaves a depletion region with built-in potential $V_0=\dfrac{kT}{q}\ln\dfrac{N_AN_D}{n_i^2}$.
+- **Diode equation:** $I=I_s\left(e^{V/\eta V_T}-1\right)$, $V_T=kT/q\approx26$ mV at 300 K. Forward: current rises sharply past about 0.7 V (silicon). Reverse: tiny saturation current $I_s$ until breakdown.
+- **MOSFET:** gate voltage above $V_{th}$ forms an inversion channel between source and drain. Below $V_{th}$: off (open switch). Above: on (closed switch). In saturation $I_D=\frac{1}{2}\mu C_{ox}\dfrac{W}{L}(V_{GS}-V_{th})^2$.
+# Practice
+Q: How does doping change the Fermi level? ::: n-type moves it up toward the conduction band; p-type moves it down toward the valence band.
+Q: Forward diode at $V=0.6$ V, $\eta=1$, $I_s=10^{-12}$ A. Find $I$. ::: $I\approx10^{-12}e^{0.6/0.026}\approx10^{-12}\times1.05\times10^{10}\approx10$ mA.
+== Module 3: Quantum Physics
+# Key ideas
+- **Classical failures at small scale:** blackbody radiation, the photoelectric effect and atomic line spectra require energy quantization: $E=h\nu$. Matter behaves as waves: $\lambda=h/p$.
+- **Uncertainty:** $\Delta x\,\Delta p\ge\hbar/2$. It limits how small a confined particle can be at rest and explains zero-point energy.
+- **Schrödinger (1D, time-independent):** $-\dfrac{\hbar^2}{2m}\dfrac{d^2\psi}{dx^2}+V\psi=E\psi$.
+- **Particle in a 1D box of width $L$:** $\psi_n=\sqrt{\dfrac2L}\sin\dfrac{n\pi x}{L}$, $E_n=\dfrac{n^2h^2}{8mL^2}$. Energy is quantized and the lowest energy is not zero.
+- **Tunneling:** a particle can cross a barrier taller than its energy. $T\approx e^{-2\kappa a}$ with $\kappa=\dfrac{\sqrt{2m(V_0-E)}}{\hbar}$. Used in flash memory and tunnel diodes.
+- **Quantum confinement:** smaller nanostructures have wider energy gaps, so a smaller quantum dot emits bluer light.
+# Practice
+Q: Ground-state energy of an electron in a 1 nm box. ::: $E_1=\dfrac{h^2}{8mL^2}\approx6.0\times10^{-20}$ J $\approx0.38$ eV.
+Q: Why does a thicker barrier reduce tunneling? ::: $T$ falls exponentially with the barrier width $a$.
+== Module 4: Laser and Fibre Optics
+# Key ideas
+- **Light–matter interaction:** absorption, spontaneous emission, **stimulated emission** (identical photon, same phase and direction). Lasing needs **population inversion** (pumping), an optical resonator (mirrors) and gain larger than loss (threshold).
+- **Nd:YAG:** solid-state, four-level system, 1064 nm, pumped by flash lamp or diode. **He–Ne:** gas laser, 632.8 nm, electric discharge excites He which transfers energy to Ne by collisions.
+- **Uses:** optical storage (CD 780 nm, DVD 650 nm, Blu-ray 405 nm), laser printing, barcode scanners.
+- **Fibre:** guides light by total internal reflection. Critical angle $\sin\theta_c=\dfrac{n_2}{n_1}$ (core $n_1>$ cladding $n_2$). **Numerical aperture** $NA=\sqrt{n_1^2-n_2^2}=\sin\theta_0$.
+- **Step-index:** abrupt core–cladding change, more modal dispersion. **Graded-index:** refractive index falls from the centre, less dispersion, higher bandwidth.
+- **System:** transmitter (LED or laser), fibre, repeaters, receiver (photodiode). **Attenuation** $\alpha=\dfrac{10}{L}\log_{10}\dfrac{P_{in}}{P_{out}}$ dB/km. Used in high-speed internet, cloud and data centres.
+# Practice
+Q: Find $NA$ for $n_1=1.48,\ n_2=1.46$. ::: $\sqrt{1.48^2-1.46^2}=\sqrt{0.0588}\approx0.24$.
+Q: Why is population inversion needed? ::: Normally more atoms are in the lower level and absorb; stimulated emission only wins if the upper level is more populated.
+@@ Algorithmic Thinking with C
+== Module 1: Algorithmic Foundations
+# Key ideas
+- **Problem solving steps:** understand the problem, plan, write the algorithm, code it, test, improve.
+- **Algorithm properties:** finite, definite (clear steps), has input and output, effective.
+- **Strategies:** brute force, divide and conquer, greedy, recursion, trial and error.
+- **Flowchart symbols:** oval = start/end, parallelogram = input/output, rectangle = process, diamond = decision, arrows = flow.
+- **Decomposition:** break a big problem into small sub-problems you can solve and test separately. Real-life use: planning a route, making a recipe, an ATM withdrawal.
+# Worked example
+Largest of three numbers: read $a,b,c$. If $a\ge b$ and $a\ge c$ print $a$; else if $b\ge c$ print $b$; else print $c$.
+# Practice
+Q: Write an algorithm to find the sum of the first $n$ natural numbers. ::: Set sum $=0$. For $i$ from 1 to $n$: sum $=$ sum $+\,i$. Print sum. (Or use $n(n+1)/2$.)
+Q: Which symbol shows a yes/no question? ::: The diamond (decision).
+== Module 2: Program Basics and Arrays
+# Key ideas
+- **Structure of a C program:** header `#include <stdio.h>`, then `int main(){ ... return 0; }` with declarations and statements. Every statement ends with `;`.
+- **Types:** `int` (4 bytes), `float`, `double`, `char`. Input and output: `scanf("%d",&x);` and `printf("%d",x);`.
+- **Operators:** arithmetic `+ - * / %`, relational `< > <= >= == !=`, logical `&& || !`, assignment `= += -=`, increment `++ --`, ternary `?:`. Integer division truncates: `7/2` is 3.
+- **Control flow:** `if / else if / else`, `switch` with `break`, loops `for`, `while`, `do-while`, plus `break` and `continue`.
+- **Arrays:** `int a[5];` has indices 0 to 4. Initialise with `{1,2,3}`. A 2D array is `int m[2][3];`.
+- **Common mistakes:** `=` instead of `==`, missing `&` in `scanf`, off-by-one in loops.
+# Worked example
+```
+#include <stdio.h>
+int main(){
+  int a[5]={2,4,6,8,10}, sum=0;
+  for(int i=0;i<5;i++) sum+=a[i];
+  printf("%d",sum);   // 30
+  return 0;
+}
+```
+# Practice
+Q: What does `printf("%d",7/2);` print? ::: 3, because both operands are integers.
+Q: How many elements does `int a[10]` have and what is the last index? ::: 10 elements, last index 9.
+== Module 3: Strings and Functions
+# Key ideas
+- A **string** is a `char` array ending with `'\0'`. `char s[6]="hello";`. Use `fgets` to read a line (avoid `gets`).
+- **String functions** (`<string.h>`): `strlen`, `strcpy`, `strcat`, `strcmp` (0 when equal).
+- **Functions:** declaration (prototype), definition, call. Arguments are **passed by value**, so the function gets a copy. `return` sends a value back. **Recursion:** a function calls itself with a base case.
+- **Structure:** groups different types: `struct student{ int id; char name[20]; float cgpa; };`. Access members with `.`
+- **Storage classes:** `auto` (local, default), `register` (hint: keep in a register), `static` (keeps value between calls, local scope), `extern` (defined elsewhere, global lifetime).
+# Worked example
+```
+int fact(int n){ if(n<=1) return 1; return n*fact(n-1); }
+```
+`fact(4)` returns $4\times3\times2\times1=24$.
+# Practice
+Q: Difference between `static` and `auto` variables? ::: `auto` is created on each call and lost on return; `static` keeps its value between calls.
+Q: What does `strcmp("a","b")` return? ::: A negative number, since `"a"` comes before `"b"`.
+== Module 4: Pointers and Files
+# Key ideas
+- A **pointer** stores an address: `int x=5; int *p=&x;` `*p` is the value at that address. Pointer arithmetic moves by the size of the type: `p+1` points to the next `int`. An array name is the address of its first element.
+- **Pass by reference:** pass `&x` so the function can change the original.
+- **Dynamic memory** (`<stdlib.h>`): `malloc(n*sizeof(int))`, `calloc` (zero filled), `realloc` (resize), `free` (release). Always check for `NULL` and free memory to avoid leaks.
+- **Files:** `FILE *fp=fopen("a.txt","r");` Modes: `r`, `w`, `a`, `r+`, `w+`, `a+`. Always `fclose(fp)`.
+- **Functions:** `fprintf`, `fscanf`, `fgetc`, `fputc`, `fgets`, `fputs`, `fread`, `fwrite`, `fseek`, `ftell`, `rewind`, `feof`.
+# Worked example
+```
+int n=3, *a=(int*)malloc(n*sizeof(int));
+for(int i=0;i<n;i++) a[i]=i*i;
+free(a);
+```
+# Practice
+Q: What is wrong with `int *p; *p=5;`? ::: `p` is uninitialised, so it points to an unknown address. Point it at valid memory first.
+Q: Which mode opens a file for appending? ::: `"a"`.
+@@ Logic System Design
+== Module 1: Boolean Algebra and Logic Gates
+# Key ideas
+- **Number systems:** binary, octal and hexadecimal conversions; **two’s complement** represents negative numbers (invert the bits and add 1).
+- **Boolean laws:** identity $A+0=A,\ A\cdot1=A$; null $A+1=1,\ A\cdot0=0$; idempotent $A+A=A$; complement $A+\overline{A}=1,\ A\overline{A}=0$; commutative, associative, distributive; absorption $A+AB=A$.
+- **De Morgan:** $\overline{A+B}=\overline{A}\,\overline{B}$ and $\overline{AB}=\overline{A}+\overline{B}$. **Duality:** swap AND with OR and 0 with 1.
+- **Gates:** AND, OR, NOT, NAND, NOR, XOR ($A\oplus B$, 1 when inputs differ), XNOR. **NAND and NOR are universal**: any circuit can be built from either alone.
+# Worked example
+$AB+A\overline{B}=A(B+\overline{B})=A\cdot1=A$.
+# Practice
+Q: Simplify $A+\overline{A}B$. ::: $A+B$.
+Q: Build a NOT gate from NAND. ::: Tie both NAND inputs together: $\overline{A\cdot A}=\overline{A}$.
+== Module 2: Combinational Logic Circuits
+# Key ideas
+- **Minterms and maxterms:** SOP (sum of products) and POS. **K-map:** group adjacent 1s in sizes 1, 2, 4, 8, as large as possible, to simplify.
+- **Encoder:** $2^n$ inputs to $n$ outputs (priority encoder resolves multiple inputs). **Decoder:** $n$ inputs to $2^n$ outputs. **Multiplexer:** $2^n$ data inputs, $n$ select lines, one output; $Y=\sum m_iI_i$. **Demultiplexer:** one input routed to one of many outputs. **Comparator:** outputs $A>B$, $A=B$, $A<B$.
+- **Half adder:** $S=A\oplus B,\ C=AB$. **Full adder:** $S=A\oplus B\oplus C_{in}$, $C_{out}=AB+C_{in}(A\oplus B)$.
+- **Ripple carry adder:** $n$ full adders in a chain; the carry ripples, so delay grows with $n$.
+# Worked example
+Add $1+1$ with a half adder: $S=1\oplus1=0$, $C=1\cdot1=1$, so the result is $10_2$.
+# Practice
+Q: Select lines needed for an 8:1 mux? ::: 3.
+Q: Why is a ripple carry adder slow? ::: Each stage waits for the carry from the previous stage.
+== Module 3: Sequential Logic Fundamentals
+# Key ideas
+- **Sequential** circuits have memory: the output depends on inputs and the stored state (feedback). Combinational circuits depend only on current inputs.
+- **SR latch** (NOR): $S=1$ sets $Q=1$, $R=1$ resets, $S=R=0$ holds, $S=R=1$ is invalid. **D latch:** transparent while enable is high, so $Q$ follows $D$.
+- **Flip-flops** change only on a clock edge. **D:** $Q^+=D$. **T:** $Q^+=T\oplus Q$. **JK:** $Q^+=J\overline{Q}+\overline{K}Q$; $J=K=1$ toggles. **SR:** as the latch, but clocked.
+- **Race-around** in a level-triggered JK is cured by edge triggering or master–slave design.
+- **Registers** store several bits. **Shift registers:** SISO, SIPO, PISO, PIPO; shifting left or right can multiply or divide by 2.
+# Practice
+Q: JK flip-flop with $J=K=1$, $Q=0$. Next state? ::: Toggle, so $Q^+=1$.
+Q: Difference between latch and flip-flop? ::: A latch is level-sensitive; a flip-flop is edge-triggered.
+== Module 4: Counters, Memory, and Programmable Logic Devices
+# Key ideas
+- **Ripple (asynchronous) counter:** each flip-flop clocks the next, so delays add up. A mod-$2^n$ counter needs $n$ flip-flops. **Synchronous counter:** all flip-flops share one clock, so it is faster and glitch-free.
+- **Mod-$N$ counter:** reset when the count reaches $N$. **Timing diagrams** show clock, inputs and outputs over time; each output toggles at half the frequency of the one before.
+- **Memory:** ROM (non-volatile), RAM (SRAM fast, DRAM dense and needs refresh). Capacity $=2^{n}\times m$ bits with $n$ address lines and $m$ data lines.
+- **PLDs:** PAL, PLA, CPLD are programmable AND/OR arrays. **FPGA:** an array of configurable logic blocks (look-up tables plus flip-flops), programmable routing and I/O blocks; reconfigurable after manufacture.
+# Practice
+Q: Address lines for a $1\text{K}\times8$ memory? ::: $2^{10}=1024$, so 10 address lines and 8 data lines.
+Q: Number of flip-flops for a mod-16 counter? ::: 4, since $2^4=16$.
+@@ Basic Electrical and Electronics Engineering
+== Module 1: Linear DC Network Topologies and Matrix Analysis
+# Key ideas
+- **Active** elements supply energy (sources); **passive** ones absorb or store it (R, L, C). **Linear** elements obey superposition and proportionality; non-linear (diodes) do not.
+- **Real source:** $V=E-Ir$ (internal resistance $r$ drops the terminal voltage). **Dependent sources** are controlled by another voltage or current.
+- **KCL:** $\sum I=0$ at a node. **KVL:** $\sum V=0$ around a loop.
+- **Mesh analysis:** write KVL for each loop current, giving $[R][I]=[V]$. A **supermesh** merges two meshes that share a current source.
+- **Nodal analysis:** write KCL at each node, giving $[G][V]=[I]$. A **supernode** merges two nodes joined by a voltage source.
+# Worked example
+Single loop: 10 V source, $2\,\Omega$ and $3\,\Omega$ in series. $I=10/5=2$ A. Voltage across the $3\,\Omega$ resistor $=6$ V.
+# Practice
+Q: When do you use a supernode? ::: When an ideal voltage source connects two non-reference nodes.
+Q: Why does a battery’s terminal voltage drop under load? ::: Current flowing through its internal resistance drops $Ir$.
+== Module 2: Sinusoidal AC Steady State and Three-Phase Power
+# Key ideas
+- $v=V_m\sin\omega t$, $\omega=2\pi f$. **Average** over a half cycle $=\dfrac{2V_m}{\pi}$. **RMS** $=\dfrac{V_m}{\sqrt2}$. Form factor $=1.11$.
+- **Phasors:** rectangular $Z=R+jX$, polar $Z=|Z|\angle\varphi$.
+- **RL:** $Z=R+j\omega L$, current lags voltage. **RC:** $Z=R-\dfrac{j}{\omega C}$, current leads. **RLC series:** $Z=R+j\left(\omega L-\dfrac1{\omega C}\right)$.
+- **Resonance:** $\omega_0=\dfrac1{\sqrt{LC}}$, $f_0=\dfrac1{2\pi\sqrt{LC}}$. $Z=R$ (minimum), current maximum, $Q=\dfrac{\omega_0L}{R}$, bandwidth $=\dfrac{f_0}{Q}$.
+- **Power:** $P=VI\cos\varphi$ (W), $Q=VI\sin\varphi$ (VAR), $S=VI$ (VA), $S^2=P^2+Q^2$, power factor $=\cos\varphi$.
+- **Three-phase:** star $V_L=\sqrt3V_{ph},\ I_L=I_{ph}$; delta $V_L=V_{ph},\ I_L=\sqrt3I_{ph}$; total power $\sqrt3\,V_LI_L\cos\varphi$.
+# Worked example
+$L=10$ mH, $C=10\ \mu$F: $f_0=\dfrac{1}{2\pi\sqrt{10^{-2}\times10^{-5}}}\approx503$ Hz.
+# Practice
+Q: RMS of a 325 V peak mains sine? ::: $325/\sqrt2\approx230$ V.
+Q: At resonance in series RLC what is the phase angle? ::: $0^\circ$ (purely resistive).
+== Module 3: Solid-State Diodes and Regulation
+# Key ideas
+- **Special diodes:** Zener (works in reverse breakdown, voltage reference), avalanche (breakdown by impact ionisation), tunnel (heavy doping, negative resistance), Schottky (metal–semiconductor, fast, low forward drop about 0.3 V), varactor (reverse-biased, voltage-controlled capacitance).
+- **Half-wave rectifier:** $V_{dc}=\dfrac{V_m}{\pi}$, $V_{rms}=\dfrac{V_m}{2}$, ripple factor 1.21, efficiency 40.6%, PIV $=V_m$.
+- **Full-wave rectifier:** $V_{dc}=\dfrac{2V_m}{\pi}$, $V_{rms}=\dfrac{V_m}{\sqrt2}$, ripple factor 0.48, efficiency 81.2%. PIV is $2V_m$ for centre-tap and $V_m$ for bridge.
+- **Zener regulator:** $R_s=\dfrac{V_{in}-V_Z}{I_Z+I_L}$.
+- **Junction capacitance** and **reverse recovery time $t_{rr}$** limit switching speed. **Current-limiting resistor** for a diode: $R=\dfrac{V_s-V_f}{I_F}$.
+# Practice
+Q: $V_{in}=12$ V, $V_Z=5.1$ V, $I_Z+I_L=20$ mA. Find $R_s$. ::: $R_s=(12-5.1)/0.02=345\,\Omega$.
+Q: Why is a bridge rectifier preferred? ::: Full-wave output without a centre-tapped transformer, and PIV only $V_m$.
+== Module 4: BJT Biasing and Performance
+# Key ideas
+- **BJT:** NPN or PNP with emitter, base, collector. **Regions:** cutoff (off), active (amplifier), saturation (on switch). $I_E=I_B+I_C$, $\alpha=\dfrac{I_C}{I_E}$, $\beta=\dfrac{I_C}{I_B}$, $\beta=\dfrac{\alpha}{1-\alpha}$.
+- **Configurations:** CE (high voltage and current gain, 180° phase shift), CB (low input impedance, good high-frequency use), CC or emitter follower (voltage gain about 1, high input impedance, low output impedance).
+- **Switch:** cutoff = open, saturation = closed. **Amplifier:** biased in the active region.
+- **DC load line:** $V_{CE}=V_{CC}-I_CR_C$. The **Q-point** is where the load line meets the device curve.
+- **Voltage-divider bias:** $V_B\approx V_{CC}\dfrac{R_2}{R_1+R_2}$, $I_E=\dfrac{V_B-V_{BE}}{R_E}$. It keeps the Q-point stable against changes in $\beta$.
+- **Models:** low-frequency h-parameter, high-frequency hybrid-$\pi$ (adds capacitances), large-signal models.
+# Practice
+Q: $\beta=100$. Find $\alpha$. ::: $\alpha=\beta/(1+\beta)=0.99$.
+Q: Why is voltage-divider bias preferred? ::: The Q-point barely depends on $\beta$, so the amplifier is stable.
+</script>
+<script>
+var S=[100,22,100,38,100,58,102,76,100,70,100,94,100,118];
+var RB=[126,57,112,62,112,80,112,98,78,72,96,94,100,118];
+var D=[
+{n:"Push-up",t:"Calisthenics",m:"Chest, shoulders, triceps, core",l:["Top","Bottom"],
+p:[[153,72,140,78,140,98,140,118,108,92,85,103,60,114],[152,98,138,102,118,108,140,118,107,107,84,110,60,114]],
+s:["Hands just wider than your shoulders, fingers forward, feet together. Body in one straight line from head to heels.","Squeeze glutes and abs, then lower until your chest is a fist’s width from the floor, elbows about 45° from your ribs.","Press the floor away until your arms are straight. Breathe in on the way down, out on the way up."],
+d:"4 × 8–15",f:"Watch for sagging hips and half reps. Too hard: hands on a table or stairs. Too easy: feet on a chair."},
+{n:"Pike push-up",t:"Calisthenics",m:"Shoulders, triceps, upper chest",l:["Top","Bottom"],
+p:[[136,90,120,84,126,101,132,118,92,66,80,92,68,118],[130,104,118,98,106,108,132,118,92,66,80,92,68,118]],
+s:["Hands shoulder-width apart, feet 30 to 40 cm apart, hips high so your body forms an upside-down V.","Bend your elbows and lower the top of your head toward the floor between your hands.","Press back up to straight arms without letting the hips drop."],
+d:"3 × 6–10",f:"Strong shoulders help you keep your hands up through long rounds. Raise your feet on a chair to make it harder."},
+{n:"Bench dip",t:"Calisthenics",m:"Triceps, chest, front shoulders",l:["Top","Bottom"],x:'<rect class="ob" x="34" y="96" width="32" height="24"/>',
+p:[[66,40,64,56,63,76,62,96,78,86,108,100,138,116],[74,64,72,80,56,80,62,96,80,108,110,106,140,117]],
+s:["Sit on a sturdy chair pushed against a wall. Put your hands on the edge beside your hips and slide forward so your hips clear the seat.","Bend your elbows straight back, not out, until your upper arms are about parallel to the floor.","Press up until your arms are straight. Keep your shoulders down, away from your ears."],
+d:"3 × 10–15",f:"Bend your knees to make it easier. Skip it if your shoulders pinch."},
+{n:"Squat",t:"Calisthenics",m:"Quads, glutes, hamstrings",l:["Stand","Bottom"],
+p:[S,[110,43,100,60,118,62,136,60,80,92,112,90,100,118]],
+s:["Feet shoulder-width apart, toes turned slightly out, arms in front for balance.","Sit your hips back and down with your chest up until your thighs are at least parallel to the floor.","Drive through your whole foot to stand. Take 3 seconds on the way down for extra work."],
+d:"4 × 15–20",f:"Keep your heels down and your knees over your toes, never caving inward."},
+{n:"Reverse lunge",t:"Calisthenics",m:"Quads, glutes, balance",l:["Stand","Bottom"],
+p:[S,[100,26,100,42,96,58,102,72,100,78,124,92,124,118,92,110,70,116]],
+s:["Stand tall with your fists up in a boxing guard or your hands on your hips.","Step one foot back and lower until both knees are about 90°, with the back knee hovering just above the floor.","Push through the front heel to return. Finish all reps on one leg, then switch."],
+d:"3 × 10 per leg",f:"Keep your torso upright and the front shin vertical. Once easy, rest the barbell across your shoulders."},
+{n:"Glute bridge",t:"Calisthenics",m:"Glutes, hamstrings, lower back",l:["Start","Top"],
+p:[[34,111,50,114,64,115,82,115,84,114,116,88,128,118],[34,111,50,114,64,115,82,115,84,88,118,86,128,118]],
+s:["Lie on your back with your knees bent and your feet flat, hip-width apart, close to your hips.","Push through your heels and lift your hips until your knees, hips and shoulders form a straight line. Squeeze for one second.","Lower slowly. Make it harder with one leg at a time."],
+d:"3 × 15",f:"Do not push your ribs up and arch your lower back. Finish with your glutes, not your back."},
+{n:"Plank",t:"Calisthenics",m:"Abs, obliques, shoulders",l:["Hold"],
+p:[[141,88,128,92,128,112,150,114,96,101,74,107,52,114]],
+s:["Elbows directly under your shoulders, forearms flat, feet hip-width apart.","Brace your abs, squeeze your glutes and push the floor away. Your body is one straight line.","Breathe steadily. End the set when your hips start to sag."],
+d:"3 × 30–60 seconds",f:"A strong midsection helps you absorb body shots and transfer power into punches."},
+{n:"Leg raise",t:"Calisthenics",m:"Lower abs, hip flexors",l:["Down","Up"],
+p:[[30,111,46,114,64,115,82,115,82,114,112,114,142,114],[30,111,46,114,64,115,82,115,82,114,84,88,86,62]],
+s:["Lie on your back with your legs straight and your hands under your hips. Press your lower back into the floor.","Keeping your legs straight, raise them until they point at the ceiling.","Lower slowly until your heels hover just above the floor. Stop before your lower back arches."],
+d:"3 × 10–15",f:"Bend your knees to make it easier."},
+{n:"Barbell Romanian deadlift",t:"Barbell",m:"Hamstrings, glutes, lower back",l:["Top","Bottom"],f1:1,
+p:[[100,22,100,38,100,60,104,80,100,70,100,94,100,118],RB],
+s:["Stand with your feet hip-width apart and hold the barbell overhand, just outside your thighs. Keep your knees soft.","Push your hips back and slide the bar down your thighs, back flat, until it passes your knees.","Squeeze your glutes to stand tall. Do not round your back."],
+d:"4 × 8, 3 seconds down",f:"Keep the bar against your legs and go only as low as your back stays flat. Start light."},
+{n:"Barbell bent-over row",t:"Barbell",m:"Back, rear shoulders, biceps",l:["Start","Pull"],f1:1,
+p:[RB,[126,57,112,62,92,70,108,80,78,72,96,94,100,118]],
+s:["Hold the bar as in the deadlift and hinge forward until your torso is about 45° to the floor, back flat, bar hanging below your chest.","Pull the bar toward your lower ribs, driving your elbows back and squeezing your shoulder blades together.","Lower under control. Do not jerk your torso upright to move the bar."],
+d:"5 × 8 (4 × 8 on Friday)",f:"Use a weight you can pull without bouncing. This is your main pulling move, so do it well."},
+{n:"Barbell overhead press",t:"Barbell",m:"Shoulders, triceps, upper chest, core",l:["Shoulders","Lockout"],f1:1,
+p:[[97,22,100,38,110,56,104,40,100,70,100,94,100,118],[95,26,100,38,106,18,104,-2,100,70,100,94,100,118]],
+s:["Lift the bar to your collarbones, hands just outside your shoulders, glutes and abs tight.","Press straight up, moving your head back slightly so the bar travels close to your face, until your arms lock out overhead.","Lower to your collarbones under control. Do not lean back."],
+d:"4 × 6–8 (3 × 8 on Friday)",f:"Stop if your lower back arches. If you cannot lift the bar to your shoulders cleanly, use a lighter bar."},
+{n:"Shadowboxing: jab and cross",t:"Boxing",m:"Shoulders, legs, conditioning, timing",l:["Guard","Cross"],f1:2,
+p:[[106,28,102,44,114,60,124,44,100,74,114,96,122,118,92,96,78,118],[108,28,106,44,130,46,152,44,100,74,114,96,122,118,92,96,78,118]],
+s:["Left foot forward (reverse this if you are left-handed). Feet a little wider than your shoulders, knees soft, fists beside your cheeks, chin tucked.","Jab: snap your lead fist straight out, turn it palm-down, and bring it straight back to your guard.","Cross: pivot your back foot, turn your hips and shoulders, throw the rear fist straight, and return to guard. Keep moving your feet between combinations."],
+d:"3-minute rounds, 1 minute rest",f:"Rounds 1 and 2: slow technique. Middle rounds: add hooks and slips. Last rounds: speed. Keep your hands up even when tired."}
+];
+function fig(p,f){
+var s='<g class="fg"><path d="M'+p[2]+' '+p[3]+'L'+p[8]+' '+p[9]+'L'+p[10]+' '+p[11]+'L'+p[12]+' '+p[13]+'l9 0';
+if(p.length>14)s+='M'+p[8]+' '+p[9]+'L'+p[14]+' '+p[15]+'L'+p[16]+' '+p[17]+'l9 0';
+s+='M'+p[2]+' '+p[3]+'L'+p[4]+' '+p[5]+'L'+p[6]+' '+p[7]+'"/><circle class="hd" cx="'+p[0]+'" cy="'+p[1]+'" r="9"/>';
+if(f==1)s+='<circle class="pl" cx="'+p[6]+'" cy="'+p[7]+'" r="9"/>';
+if(f==2)s+='<circle class="fs" cx="'+p[6]+'" cy="'+p[7]+'" r="5"/>';
+return s+'</g>';
+}
+
+
+setTimeout(function(){var b=document.getElementById("boot");if(b)b.remove()},1500);
+window.addEventListener("error",function(e){var v=document.getElementById("v");if(v&&!v.innerHTML)v.innerHTML='<p style="padding:20px">Something went wrong: '+e.message+"</p>"});
+var $=function(s){return document.querySelector(s)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function ymd(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function addd(s,n){var d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return ymd(d)}
+function tod(){return ymd(new Date())}
+function dayNo(s){return Math.round((new Date(s+"T12:00:00")-new Date(st.start+"T12:00:00"))/864e5)+1}
+function mm(t,m){var a=t.split(":"),x=(+a[0]*60+ +a[1]+m+1440)%1440;return("0"+Math.floor(x/60)).slice(-2)+":"+("0"+x%60).slice(-2)}
+var DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var PL={3:"-A-B-C-",4:"-AB-C-X",5:"-ABXCD-",6:"-ABXCDX"};
+var EY=["str","str","str","str","str","str","sta","sta","str","str","str","agi"];
+var SN={str:"Strength",agi:"Agility",sta:"Stamina",int:"Intelligence",sen:"Sense"},CL={box:"Fighter",str:"Warrior",fat:"Berserker"};
+var MT=[["Confidence","I do what I said I would do."],["Strength","The weight is heavy because I am growing."],["Discipline","Motivation starts the day. Discipline finishes it."],["Wisdom","Small steps every day. Never miss twice."],["Focus","One task. One round. Full attention."],["Confidence","I am not who I was yesterday."],["Strength","The effort hurts now. The pride lasts."],["Discipline","Show up on the days it is hard."],["Wisdom","Rest is part of the plan, not a break from it."],["Focus","Hands up. Eyes on the goal."]];
+var BOOKS=[["Atomic Habits","James Clear",320,"Tiny changes compound. Make a habit obvious, easy and rewarding, and focus on who you want to become."],["Can’t Hurt Me","David Goggins",364,"Most people quit far below their limit. Toughen your mind by choosing the hard thing on purpose."],["Deep Work","Cal Newport",304,"Focused, distraction-free work is rare and valuable. Schedule it and protect it."],["Discipline Is Destiny","Ryan Holiday",288,"Self-control is built through small daily choices and supports every other virtue."],["Meditations","Marcus Aurelius",254,"Control your judgments, accept what you cannot change, and act with purpose today."]];
+var SHOP=[["shield","Streak Shield",60,"Rare","Protects one missed day automatically."],["xp","XP Potion",40,"Common","Use it for +50 XP."],["cheat","Cheat Meal Voucher",80,"Epic","One meal of your choice, guilt-free."],["game","Gaming Hour",50,"Common","One hour, no guilt."]];
+var URG=["20 push-ups","30 bodyweight squats","a 60-second plank","50 skips on the spot","10 burpees","40 shadowboxing punches, fast"];
+var MS={3:"Spark",7:"Week One",21:"Habit Seed",31:"Month Marvel",50:"Halfway Hunter",77:"Shadow Monarch",150:"Iron Veteran",231:"Apex",365:"One Year",500:"Legend",777:"Sovereign"};
+var st={},tab="q",vd,AC,RG=0,RI,SZ=0,LD,FILE,AU,GS=0,QI=0;
+var T={w:1500,r:0,n:1,f:1,run:0,ph:[],i:0,left:1500,rem:0,end:0,h:0,done:0};
+var PRE=[["Focus 25",1500,0,1,1],["Focus 45",2700,0,1,1],["Focus 60",3600,0,1,1],["Focus 90",5400,0,1,1],["Boxing 4 × 3",180,60,4,0],["Boxing 8 × 3",180,60,8,0],["Rest 60 s",60,0,1,0]];
+function load(){try{st=JSON.parse(localStorage.getItem("arise77"))||{}}catch(e){st={}}
+try{FILE=localStorage.getItem("arise77f")}catch(e){}
+var z={rdy:{},ml:{},sn:{},tr:{},arr:{},lv:1,xp:0,gold:20,pts:0,cnt:{},ap:{},p:{},fin:{},pen:{},pc:{},urg:{},pg:{},fx:{},inv:{},cust:[],jr:{},best:0,alm:{on:0,t:"05:30",snd:"ping",vol:.8}};
+for(var k in z)if(st[k]==null)st[k]=z[k];
+if(st.prof){var pf=st.prof;pf.stt=pf.stt||"20:15";pf.sm=pf.sm||60;pf.kg=pf.kg||65;pf.diet=pf.diet||"nonveg"}if(!st.books)st.books=BOOKS.map(function(b,i){return{id:i,t:b[0],a:b[1],tot:b[2],pg:0,k:b[3]}})}
+function save(){try{localStorage.setItem("arise77",JSON.stringify(st))}catch(e){}}
+function need(l){return 100+l*50}
+function stat(y){return 10+Math.floor((st.cnt[y]||0)/6)+(st.ap[y]||0)}
+function ttime(){var p=st.prof;return p.win=="pre"?mm(p.wake,30):p.win=="post"?mm(p.ce,45):"20:30"}
+function sess(d){var p=st.prof,n=dayNo(d);if(!p||n<1||n>TOT())return null;var c=PL[p.days].charAt(new Date(d+"T12:00:00").getDay());if(c=="-"||(st.rdy||{})[d]==4)return null;if(c=="X"&&p.goal=="str")c="D";var w0=Math.ceil(n/7);if(c=="D")c=["D","L","F","H"][(w0-1)%4];if(c=="C"&&p.days==3&&w0%2==0)c="X";
+var w=Math.ceil(n/7),adj=p.lvl-2+Math.min(2,Math.floor(LL(w)/4))+(w%4==0?-1:0)+rj(d),a=SES[c].map(function(e){return[e[0],SF(c,e[1],adj,p,d,e[0]),scl(e[2],LL(w))]});
+if(c!="X")MAB(n,p).forEach(function(x){a.push(x)});else if(artFor(n)!="box")a=MAB(n,p,1).concat(a.slice(1));return{c:c,ex:a,w:w}}
+function addxp(x){var o=st.lv;st.txp=(st.txp||0)+x;(st.xh=st.xh||{})[tod()]=st.txp;st.xp+=x;while(st.xp>=need(st.lv)){st.xp-=need(st.lv);st.lv++;st.pts+=3}if(st.lv>o){tn(660,.2,.8);setTimeout(function(){tn(990,.4,.8)},200);ov('<div class="w"><div class="th">[ LEVEL UP ]</div><div class="big">'+st.lv+'</div><p>+3 attribute points to spend on the Status window.</p><button class="b" data-a="ok">Continue</button></div>')}}
+function gain(x,y,t){x=Math.round(x*xm(y));var g=Math.ceil(x/3);st.gold+=g;st.cnt[y]=(st.cnt[y]||0)+1;toast("[ QUEST COMPLETE ] "+t+" · +"+x+" XP · +"+g+" gold");addxp(x)}
+function pen(){var t=tod();return st.pen[t]&&!st.pc[t]}
+function chk(d){var q=Q(d),p=st.p[d]||{};if(st.fin[d]||pen()&&d==tod())return;if(q.every(function(x){return(p[x.k]||0)>=x.n})){st.fin[d]=1;gain(50,"sen","Daily quests cleared");var s=streak();if(s>st.best)st.best=s}}
+function prog(k,dl){var d=tod(),q=Q(d).filter(function(x){return x.k==k})[0];if(!q)return;var p=st.p[d]=st.p[d]||{},c=p[k]||0;if(c>=q.n)return;c=Math.max(0,c+dl);p[k]=c;if(c>=q.n){gain(q.x,q.y,q.t);chk(d);mt(d)}save();render();if(QI)qinfo()}
+function streak(){var d=tod();if(!st.fin[d])d=addd(d,-1);var n=0;while(st.fin[d]){n++;d=addd(d,-1)}return n}
+function dailyCheck(){if(!st.prof)return;var t=tod(),y=addd(t,-1),ny=dayNo(y),nt=dayNo(t);
+if(st.chk!=t){if(st.chk&&ny>=1&&ny<=TOT()&&!st.fin[y]){if(st.inv.shield>0){st.inv.shield--;st.fin[y]="s";toast("Streak Shield used. Yesterday is protected.","warn")}else{st.pen[t]=st.hard?2:1;if(st.hard){st.xp=Math.max(0,st.xp-30);st.gold=Math.max(0,st.gold-10)}toast("[ WARNING ] Daily quests failed. Penalty quest issued.","bad")}}st.chk=t;save()}
+if(!st.urg[t]&&new Date().getHours()>=12&&nt>=1&&nt<=TOT()){st.urg[t]={i:(+t.slice(-2)+nt)%URG.length};save()}}
+function tn(f,d,v){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=="suspended")AC.resume();var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type="square";o.frequency.value=f;g.gain.setValueAtTime((v||st.alm.vol)*.25,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(t+d)}catch(e){}}
+var SND={ping:function(){tn(1320,.12);setTimeout(function(){tn(880,.2)},150)},digi:function(){for(var i=0;i<4;i++)setTimeout(function(){tn(1000,.1)},i*170)},siren:function(){tn(620,.4);setTimeout(function(){tn(900,.4)},420)},chime:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){tn(f,.5)},i*220)})}};
+function stopS(){clearInterval(RI);RG=0;try{AU&&AU.pause()}catch(e){}}
+function ring(){if(RG)return;RG=1;var a=st.alm;ov('<div class="w bad"><div class="th">[ ALARM ]</div><div class="big">'+a.t+'</div><p>ARISE, PLAYER.</p><button class="b" data-a="dm">Dismiss</button> <button class="g" data-a="sz">Snooze 5 min</button></div>');sound();if(!(a.snd=="custom"&&FILE))RI=setInterval(sound,1500)}
+function ov(h,k){QI=k?1:0;var o=$("#o");o.innerHTML=h;o.hidden=false}
+function toast(m,k){var e=document.createElement("div");e.className="ts "+(k||"");e.textContent=m;$("#tt").appendChild(e);if(st.snd!==0)tn(1320,.1,.5);setTimeout(function(){e.remove()},3800)}
+function sched(){try{var L=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.LocalNotifications;if(!L)return;var hm=function(t){var x=t.split(":");return{hour:+x[0],minute:+x[1]}},a=st.alm,n=[];
+if(a.on)n.push({id:1,title:"[ SYSTEM ] Arise.",body:"Your alarm is ringing. Open the app to dismiss it.",schedule:{on:hm(a.t),allowWhileIdle:true}});
+if(st.nf&&st.nf.nr)n.push({id:5,title:"[ SYSTEM ] Wind down",body:"Phone out of the bed. Lights soon.",schedule:{on:hm(mm(st.prof.bed,-30)),allowWhileIdle:true}});n.push({id:4,title:"[ SYSTEM ] Study block",body:"Your mandatory study period starts now.",schedule:{on:hm(st.prof.stt||"20:15"),allowWhileIdle:true}},{id:2,title:"[ SYSTEM ] Training window open",body:"Your daily quests await.",schedule:{on:hm(ttime()),allowWhileIdle:true}},{id:3,title:"[ WARNING ] Check your daily quests",body:"Clear them before midnight or the penalty awaits.",schedule:{on:{hour:21,minute:0},allowWhileIdle:true}});
+L.requestPermissions().then(function(){return L.cancel({notifications:[{id:1},{id:2},{id:3},{id:4},{id:5}]})}).then(function(){return L.schedule({notifications:n})}).catch(function(){})}catch(e){}}
+function card(e){var g="";e.p.forEach(function(p,i){g+='<figure class="fig"><svg viewBox="0 -12 200 142" role="img" aria-label="'+e.n+', '+e.l[i]+'"><line class="gl" x1="8" y1="120" x2="192" y2="120"/>'+(e.x||"")+fig(p,e.f1)+'</svg><figcaption>'+e.l[i]+'</figcaption></figure>'});
+return'<div class="w cd"><h3>'+e.n+'</h3><p class="fix">'+e.m+'</p><div class="figs">'+g+'</div><ol>'+e.s.map(function(t){return"<li>"+t+"</li>"}).join("")+'</ol><p class="fix">'+e.f+'</p><button class="b" data-a="ok">Close</button></div>'}
+function win(t,b,c){return'<section class="w '+(c||"")+'"><div class="th">'+t+'</div>'+b+'</section>'}
+function bar(c,v,l){return'<div class="bl"><span>'+l+'</span><div class="bar '+c+'"><i style="width:'+v+'%"></i></div><em>'+Math.round(v)+'%</em></div>'}
+function items(){return SHOP.map(function(s){return{id:s[0],n:s[1],c:s[2],r:s[3],d:s[4]}}).concat(st.cust.map(function(c){return{id:"c"+c.id,n:c.n,c:c.c,r:"Custom",d:"Your own reward."}}))}
+var IC={home:"M3 11l9-8 9 8v10h-6v-6H9v6H3z",chart:"M4 20V10M10 20V4M16 20v-7M2 20h20",user:"M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6",book:"M4 4h7a3 3 0 013 3v14a3 3 0 00-3-3H4zM20 4h-6M20 4v14h-6",bell:"M6 17v-6a6 6 0 1112 0v6l2 2H4zM10 21h4",str:"M2 12h3M19 12h3M5 8v8M8 6v12M16 6v12M19 8v8M8 12h8",agi:"M7 3v9l-4 5v3h14v-3l-6-3V3z",vit:"M12 21s-8-5-8-11a4.5 4.5 0 018-2.5A4.5 4.5 0 0120 10c0 6-8 11-8 11z",int:"M9 4a3 3 0 00-3 3 3 3 0 00-2 3 3 3 0 002 3 3 3 0 003 4h1V4zM15 4a3 3 0 013 3 3 3 0 012 3 3 3 0 01-2 3 3 3 0 01-3 4h-1V4z",per:"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 100-6 3 3 0 000 6z",ap:"M12 2l7 10-7 10-7-10z",hp:"M12 4v16M4 12h16",mp:"M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z",info:"M12 22a10 10 0 100-20 10 10 0 000 20zM12 8h.01M11 12h1v5h1"};
+function ic(n){return'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="'+IC[n]+'"/></svg>'}
+var TL={E:"Novice Hunter",D:"Iron Hunter",C:"Night Walker",B:"Blade Dancer",A:"Shadow Walker",S:"Shadow Monarch"},GN={A:"Gate of Iron",B:"Titan’s Stride",C:"Pull of the Shadow",D:"Awakening Circuit",X:"Fighter’s Dance"};
+function isg(q){return q.k=="wu"||q.k[0]=="e"||q.k=="rest"||q.k=="c1"||q.k=="c2"}
+function vSt(){var p=st.prof,t=tod(),qs=Q(t),pp=st.p[t]||{},dn=qs.filter(function(q){return(pp[q.k]||0)>=q.n}).length,hp=dn/qs.length,mp=Math.min(1,(pp.read?.5:0)+Math.min(.5,(st.fx[t]||0)*.25)),r="EDCBAS".charAt(Math.min(5,Math.floor((st.lv-1)/4))),m=MT[(Math.max(1,dayNo(t))-1)%MT.length],mh=50+stat("sta")*10,mM=30+stat("int")*8,a=items().filter(function(i){return st.inv[i.id]>0});
+function sx(y,i,l){return'<div class="sx">'+ic(i)+'<span>'+l+'</span><b>'+(y=="ap"?st.pts:stat(y))+'</b>'+(st.pts&&y!="ap"?'<button class="ad" data-a="pt" data-v="'+y+'" aria-label="Add point">+</button>':"")+'</div>'}
+function hm(i,l,v,c,mx){return'<div class="hm">'+ic(i)+'<div><span>'+l+'</span> <em>'+Math.round(mx*v)+' / '+mx+'</em><div class="bar '+c+'"><i style="width:'+v*100+'%"></i></div></div></div>'}
+return'<section class="fr"><div class="tbox">STATUS</div>'+(AV?'<img class="av" src="'+AV+'" alt="">':'')+'<p class="ctr mut" style="margin:0 0 12px">'+esc(p.name||"Player")+' · '+CL[p.goal]+'</p><div class="meta"><div><small>LEVEL</small><b class="lvl">'+st.lv+'</b></div><div><small>RANK</small><b>'+r+'</b></div><div><small>TITLE</small><b>'+TL[r]+'</b></div></div><div class="box">'+hm("hp","HP",hp,"hp",mh)+hm("mp","MP",mp,"mp",mM)+'</div><div class="box"><div>'+sx("str","str","STR")+sx("agi","agi","AGI")+sx("sen","per","PER")+'</div><div>'+sx("sta","vit","VIT")+sx("int","int","INT")+sx("ap","ap","AP")+'</div></div></section>'
++win("Experience",bar("",st.xp/need(st.lv)*100,"XP "+st.xp+" / "+need(st.lv))+'<p class="mut" style="margin:6px 0 0">Gold <b>'+st.gold+'</b> · Streak <b>'+streak()+'</b> days</p>')
++win(m[0]+" card",'<p class="mt">“'+m[1]+'”</p>')
++win("Inventory",a.length?'<div class="ig">'+a.map(function(i){return'<div class="it '+i.r+'"><b>'+esc(i.n)+'</b> ×'+st.inv[i.id]+'<small>'+i.r+'</small>'+(i.id=="shield"?'<small>Used automatically</small>':'<button class="g" data-a="ub" data-v="'+i.id+'">Use</button>')+'</div>'}).join("")+'</div>':'<p class="mut">Empty. Earn gold from quests and spend it in the shop under System.</p>')}
+function splash(){return'<div class="hero"><svg viewBox="0 0 300 270" aria-hidden="true"><defs><radialGradient id="gg" cx="55%" cy="42%" r="60%"><stop offset="0" stop-color="#8B5BFF" stop-opacity=".9"/><stop offset="1" stop-color="#07051A" stop-opacity="0"/></radialGradient><radialGradient id="ge"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#C9A8FF" stop-opacity="0"/></radialGradient></defs><rect width="300" height="270" fill="url(#gg)"/><path d="M10 270C20 195 80 170 150 170s130 25 140 100z" fill="#0D0726"/><path d="M130 150h40v28l-20 12-20-12z" fill="#150B38"/><ellipse cx="150" cy="105" rx="43" ry="52" fill="#1A0E44"/><path d="M104 100c-2-52 92-62 96 0-20-26-70-30-96 0z" fill="#0A0620"/><circle cx="168" cy="112" r="14" fill="url(#ge)"/><circle cx="168" cy="112" r="3" fill="#fff"/></svg></div><h1>Your <em>Awakening</em> begins now!</h1><p class="mut">Walk your path. Take action. Conquer. Become a legend.</p><button class="pill" data-a="gs">Get Started</button>'}
+function fmt(s){return Math.floor(s/60)+":"+("0"+s%60).slice(-2)}
+function vSy(){var a=st.alm;return win("[ ALARM ]",'<label class="ck"><input type="checkbox" id="ao"'+(a.on?' checked':'')+'> Morning alarm on</label><div class="row"><label>Time<input id="at" type="time" value="'+a.t+'"></label><label>Sound<select id="as">'+[["ping","System ping"],["digi","Digital"],["siren","Siren"],["chime","Chime"],["custom","My own file"]].map(function(o){return'<option value="'+o[0]+'"'+(a.snd==o[0]?' selected':'')+'>'+o[1]+'</option>'}).join("")+'</select></label></div><label>Volume<input type="range" id="av" min="0.1" max="1" step="0.1" value="'+a.vol+'"></label><label>Your own sound (any size, stored on this device)<input type="file" id="af" accept="audio/*"></label>'+(a.fn?'<p class="fix">Current file: '+esc(a.fn)+'</p>':'')+'<div class="row"><button class="g" data-a="ts">Test sound (10 s)</button></div><p class="fix">Your chosen sound plays while the app is open. In the installed app a notification also fires at this time with your phone’s default sound.</p>')
++win("[ TIMER ]",'<p class="ctr mut" id="tp"></p><div class="big" id="tt2"></div><div class="row"><button class="b" id="ts" data-a="go" style="flex:1">Start</button><button class="g" data-a="rs">Reset</button></div><div class="row" style="flex-wrap:wrap">'+PRE.map(function(p,i){return'<button class="g" data-a="pre" data-v="'+i+'">'+p[0]+'</button>'}).join("")+'</div>')
++win("[ SHOP · "+st.gold+" GOLD ]",items().map(function(i){return'<div class="q"><div class="qb"><b>'+esc(i.n)+'</b><small>'+i.r+' · '+esc(i.d)+'</small></div><button class="b" data-a="buy" data-v="'+i.id+'">'+i.c+' G</button></div>'}).join("")+'<div class="row"><label>Your own reward<input id="rn" type="text" maxlength="30"></label><label style="max-width:80px">Gold<input id="rc" type="number" min="5" value="50"></label><button class="g" data-a="ar">Add</button></div>')
++win("[ SYSTEM ]",'<label class="ck"><input type="checkbox" id="hm"'+(st.hard?' checked':'')+'> Hard mode: bigger penalties, and missed days cost XP and gold</label><p class="fix">Training at '+ttime()+' · '+st.prof.days+' days a week</p><div class="row"><button class="g" data-a="rb">Rebuild plan</button><button class="g" data-a="nt">Notifications</button><button class="g" data-a="rz">Reset all</button></div>')}
+function setup(){var p=st.prof||{name:"",wake:"05:30",bed:"22:30",cs:"07:00",ce:"18:00",win:"post",days:5,goal:"box",lvl:1};
+function sel(id,o,v){return'<select id="'+id+'">'+o.map(function(x){return'<option value="'+x[0]+'"'+(x[0]==v?' selected':'')+'>'+x[1]+'</option>'}).join("")+'</select>'}
+return win("[ PLAYER REGISTRATION ]",'<p class="mut">The System will build your plan around your classes, study time and sleep.</p><label>Name<input id="sn" type="text" maxlength="20" value="'+esc(p.name)+'"></label><div class="row"><label>Wake up<input id="sw" type="time" value="'+p.wake+'"></label><label>Lights out<input id="sb" type="time" value="'+p.bed+'"></label></div><div class="row"><label>Class starts<input id="sc" type="time" value="'+p.cs+'"></label><label>Class ends<input id="se" type="time" value="'+p.ce+'"></label></div><label>Training window'+sel("swin",[["pre","Before class"],["post","After class"],["late","Late evening, 20:30"]],p.win)+'</label><div class="row"><label>Days per week'+sel("sd",[[3,"3"],[4,"4"],[5,"5"],[6,"6"]],p.days)+'</label><label>Goal'+sel("sg",[["box","Boxing and strength"],["str","Strength"],["fat","Fat loss and stamina"]],p.goal)+'</label></div><label>Fitness level'+sel("sl",[[1,"Beginner"],[2,"Intermediate"],[3,"Advanced"]],p.lvl)+'</label><div class="row"><label>Study starts<input id="sst" type="time" value="'+(p.stt||"20:15")+'"></label><label>Minutes<input id="ssm" type="number" min="30" max="240" step="5" value="'+(p.sm||60)+'"></label></div><div class="row"><label>Weight (kg)<input id="skg" type="number" min="35" max="200" value="'+(p.kg||65)+'"></label><label>Diet'+sel("sdt",[["vegan","Vegan"],["nonveg","Non-vegan"]],p.diet||"nonveg")+'</label></div><button class="b wide" data-a="aw">Awaken</button>')}
+function render(){document.body.className=pen()?"pen":"";var v=$("#v"),nv=$("nav");
+if(!st.prof){nv.hidden=true;v.innerHTML=GS?setup():splash();return}nv.hidden=false;
+v.innerHTML=tab=="st"?vSt()+vExtra():tab=="q"?vQ():tab=="pa"?vPa():tab=="lr"?vLearn():tab=="sc"?vDay():tab=="fu"?vFuel():tab=="mi"?vMind():vSy()+vArt()+vApp();
+document.querySelectorAll("nav button").forEach(function(b){b.className=b.dataset.v==tab?"on":""});
+if(tab=="sy")paintT();clockT();post()}
+function clockT(){var c=$("#cd");if(!c)return;var n=new Date(),sc=Math.max(0,Math.floor((new Date(addd(tod(),1)+"T00:00:00")-n)/1e3));c.textContent=("0"+Math.floor(sc/3600)).slice(-2)+":"+("0"+Math.floor(sc%3600/60)).slice(-2)+":"+("0"+sc%60).slice(-2);var r=$("#cr");if(r)r.style.width=sc/864+"%"}
+function clock(){var n=new Date(),t=ymd(n),hm=("0"+n.getHours()).slice(-2)+":"+("0"+n.getMinutes()).slice(-2);
+if(LD!=t){LD=t;dailyCheck();vd=null;render();arrive()}clockT();var a=st.alm;
+if(a.on&&hm==a.t&&a.last!=t){a.last=t;save();ring()}if(SZ&&Date.now()>=SZ){SZ=0;ring()}}
+function paintT(){var a=$("#tt2");if(!a)return;a.textContent=fmt(T.left);$("#tp").textContent=T.done?"Finished":T.ph[T.i][0]+(T.run?"":" (ready)");$("#ts").textContent=T.run?"Pause":"Start"}
+function build(){clearInterval(T.h);T.run=0;T.done=0;T.ph=[];for(var i=1;i<=T.n;i++){T.ph.push([T.n>1?"Round "+i+" of "+T.n:(T.f?"Deep work":"Timer"),T.w]);if(i<T.n&&T.r>0)T.ph.push(["Rest",T.r])}T.i=0;T.left=T.ph[0][1];T.rem=T.left*1000}
+function tick(){var l=Math.ceil((T.end-Date.now())/1000);
+if(l<=0){tn(880,.6);T.i++;if(T.i>=T.ph.length){clearInterval(T.h);T.run=0;T.done=1;T.left=0;if(T.f){st.fx[tod()]=(st.fx[tod()]||0)+1;gain(20,"int","Focus session");save()}}else{T.rem=T.ph[T.i][1]*1000;T.end=Date.now()+T.rem;T.left=T.ph[T.i][1]}}else{if(l<=3&&l!=T.left)tn(660,.15);T.left=l}paintT()}
+function go(){if(T.run){clearInterval(T.h);T.rem=T.end-Date.now();T.run=0}else{if(T.done)build();T.end=Date.now()+T.rem;T.run=1;T.h=setInterval(tick,250);tn(660,.15)}paintT()}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-a]"),o=$("#o");if(e.target===o&&!RG){o.hidden=true;QI=0;return}if(!b)return;var a=b.dataset.a,v=b.dataset.v,t=tod(),g=function(i){return $("#"+i).value};
+if(a=="tab"){tab=v;render();window.scrollTo(0,0)}
+else if(a=="ok"){o.hidden=true;QI=0}
+else if(a=="dy"){var nd=addd(vd||t,+v),n=dayNo(nd);if(n>=1&&n<=TOT()){vd=nd;render()}}
+else if(a=="pq")prog(v,1);
+else if(a=="ex"){ov(card(D[+v]))}else if(a=="qi"){qinfo()}else if(a=="gs"){GS=1;render();window.scrollTo(0,0)}
+else if(a=="pt"&&st.pts>0){st.pts--;st.ap[v]=(st.ap[v]||0)+1;save();render()}
+else if(a=="pc"){st.pc[t]=1;toast("Penalty cleared. You may continue.","warn");chk(t);save();render()}
+else if(a=="ug"){st.urg[t].d=1;st.gold+=10;addxp(30);toast("[ URGENT QUEST ] Complete · +30 XP","warn");save();render()}
+else if(a=="pb"){var bk=st.books.filter(function(x){return x.id==v})[0],n=+b.dataset.n;bk.pg+=n;st.pg[t]=(st.pg[t]||0)+n;var p=st.p[t]=st.p[t]||{};if(st.pg[t]>=10&&!p.read){p.read=1;gain(10,"int","Read 10 pages");chk(t)}if(bk.pg>=bk.tot&&!bk.f){bk.f=1;gain(100,"int","Book finished: "+bk.t)}save();render()}
+else if(a=="ab"){var tt=g("bt").trim(),pp=+g("bp");if(tt&&pp>0){st.books.push({id:Date.now(),t:tt,a:"",tot:pp,pg:0,k:""});save();render()}}
+else if(a=="jr"){var x=g("jt").trim();if(x){var nw=!st.jr[t];st.jr[t]=x;if(nw)gain(10,"int","Journal entry");save();toast("Entry saved.")}}
+else if(a=="buy"){var it=items().filter(function(i){return i.id==v})[0];if(st.gold>=it.c){st.gold-=it.c;st.inv[v]=(st.inv[v]||0)+1;toast("Purchased: "+it.n);save();render()}else toast("Not enough gold.","warn")}
+else if(a=="ub"){if(st.inv[v]>0){st.inv[v]--;if(v=="xp")addxp(50);toast(v=="xp"?"+50 XP":"Enjoy it. You earned it.");save();render()}}
+else if(a=="ar"){var rn=g("rn").trim(),rc=+g("rc");if(rn&&rc>0){st.cust.push({id:Date.now(),n:rn,c:rc});save();render()}}
+else if(a=="aw"){var old=st.prof;st.prof={name:g("sn").trim(),wake:g("sw"),bed:g("sb"),cs:g("sc"),ce:g("se"),win:g("swin"),days:+g("sd"),goal:g("sg"),lvl:+g("sl"),stt:g("sst"),sm:Math.max(30,+g("ssm")||60),kg:+g("skg")||65,diet:g("sdt")};if(!st.start)st.start=t;if(!old)st.alm.t=st.prof.wake;save();sched();dailyCheck();tab="q";render();setTimeout(arrive,400)}
+else if(a=="rb"){$("#v").innerHTML=setup();$("nav").hidden=true}
+else if(a=="nt"){sched();toast("Notifications requested. In the installed app, allow them when asked.")}
+else if(a=="rz"){ask("Warning","Erase all progress and start over?","rz2")}else if(a=="rz2"){try{localStorage.removeItem("arise77")}catch(x){}load();o.hidden=true;render()}
+else if(a=="ts")sound(1);
+else if(a=="dm"){stopS();o.hidden=true;prog("wake",1)}
+else if(a=="sz"){stopS();SZ=Date.now()+3e5;o.hidden=true}
+else if(a=="go")go();
+else if(a=="rs"){build();paintT()}
+else if(a=="pre"){var pr=PRE[+v];T.w=pr[1];T.r=pr[2];T.n=pr[3];T.f=pr[4];build();paintT()}});
+document.addEventListener("change",function(e){var t=e.target,i=t.id,a=st.alm;
+if(i=="ao"){a.on=t.checked?1:0;if(a.on)tn(880,.2)}else if(i=="at")a.t=t.value;else if(i=="as")a.snd=t.value;else if(i=="av")a.vol=+t.value;else if(i=="hm")st.hard=t.checked;
+
+else return;save();sched()});
+IC.mind="M12 20c-5 0-8-4-8-9 4 0 7 2 8 5 1-3 4-5 8-5 0 5-3 9-8 9zM12 4c1 3 1 6 0 9";
+D.push(
+{n:"Diamond push-up",t:"Calisthenics",m:"Triceps, inner chest, shoulders",l:["Top","Bottom"],p:D[0].p,s:["Start in a push-up position with your hands together under your chest, thumbs and index fingers forming a diamond.","Keep your body in a straight line and lower your chest to your hands, elbows brushing your ribs.","Press up until your arms are straight."],d:"3 × 6–12",f:"Too hard? Do them from your knees, or with your hands on a table."},
+{n:"Jump squat",t:"Calisthenics",m:"Quads, glutes, power",l:["Load","Jump"],p:[D[3].p[1],[100,6,100,22,100,42,102,60,100,54,100,78,100,102]],s:["Squat down until your thighs are nearly parallel to the floor, arms back.","Explode upward and jump as high as you can, swinging your arms.","Land softly on the balls of your feet, bend your knees to absorb it, and go into the next rep."],d:"3 × 10",f:"Land quietly. If your knees hurt, do fast squats without leaving the floor."},
+{n:"Mountain climber",t:"Calisthenics",m:"Core, shoulders, conditioning",l:["Plank","Drive"],p:[[153,72,140,78,140,98,140,118,108,92,85,103,60,114,108,92,85,103,60,114],[153,72,140,78,140,98,140,118,108,92,85,103,60,114,108,92,122,100,108,114]],s:["Start in a high plank, hands under your shoulders, body in a straight line.","Drive one knee toward your chest, then switch legs quickly, as if running on the spot.","Keep your hips level and your core tight. Breathe steadily."],d:"3 × 30 s",f:"Slow down if your hips bounce up."},
+{n:"Superman",t:"Calisthenics",m:"Lower back, glutes, shoulders",l:["Down","Lift"],p:[[150,108,132,112,148,114,166,114,92,112,70,113,48,114],[150,98,132,104,150,100,168,96,92,110,70,102,48,94]],s:["Lie face down with your arms stretched forward and your legs straight.","Lift your arms, chest and legs off the floor together and squeeze your back and glutes for 2 seconds.","Lower slowly with control."],d:"3 × 12",f:"Look at the floor, not forward, to keep your neck neutral."},
+{n:"Burpee",t:"Calisthenics",m:"Full body, conditioning",l:["Stand","Crouch","Plank"],p:[S,[122,52,110,64,120,92,126,116,82,96,104,88,100,118],D[0].p[0]],s:["Stand tall, then drop into a squat and put your hands on the floor.","Jump or step your feet back to a high plank, and do one push-up if you can.","Jump your feet back to your hands and leap up with your arms overhead."],d:"3 × 10",f:"Step instead of jumping to make it easier."},
+{n:"Jumping jacks",t:"Calisthenics",m:"Warm-up, heart rate",l:["Closed","Open"],p:[[100,22,100,38,100,58,102,76,100,70,100,94,100,118,100,94,100,118],[100,22,100,38,112,22,118,4,100,70,108,94,116,118,92,94,84,118]],s:["Stand with your feet together and your arms at your sides.","Jump your feet apart while swinging your arms overhead.","Jump back to the start. Keep a steady rhythm."],d:"40 s",f:"Low-impact version: step out one foot at a time."});
+EY=EY.concat(["str","agi","sta","sta","sta","sta"]);
+var EM={0:[60,0],1:[60,0],2:[60,0],3:[60,0],4:[60,0],5:[45,0],6:[30,45],7:[45,0],8:[90,0],9:[90,0],10:[90,0],11:[60,180],12:[60,0],13:[60,0],14:[45,30],15:[45,0],16:[60,0],17:[0,40]};
+var SES={A:[[0,4,"8–15 reps"],[1,3,"6–10 reps"],[12,3,"6–12 reps"],[2,3,"10–15 reps"],[10,3,"6–8 reps"]],B:[[3,4,"15–20 reps"],[4,3,"10 reps per leg"],[13,3,"10 reps"],[5,3,"15 reps"],[8,3,"10 reps"],[6,3,"45 s"]],C:[[9,4,"10 reps"],[15,3,"12 reps"],[7,4,"12 reps"],[6,3,"45 s"],[14,3,"30 s"]],D:[[16,3,"10 reps"],[0,4,"10–15 reps"],[3,4,"20 reps"],[14,3,"30 s"],[15,3,"12 reps"]],X:[[11,8,"3 min rounds"],[14,3,"30 s"],[6,3,"45 s"]]};
+var COMBOS=["1–1–2: jab, jab, cross. Keep your chin down.","1–2–3: jab, cross, lead hook.","1–2–3–2: jab, cross, hook, cross.","1–1–2, then slip: jab, jab, cross, move your head off the line.","1–2, roll under, 2–3: jab, cross, bend under an imaginary hook, then cross and hook.","Body shots: jab, cross to the body, hook to the body, step out.","Free flow: any combination. Keep moving and keep your hands up.","Speed round: short, fast 1–2s. Reset your stance each time."];
+var WU=[[17,"Jumping jacks",40,0,"40 seconds, steady rhythm."],[3,"Slow squats",0,20,"10 slow reps, 3 seconds down."],[0,"Slow push-ups",0,16,"8 slow reps. Knees down if you need to."],[6,"Plank",20,0,"Hold for 20 seconds."]];
+var MIND=[{t:"Box breathing",sec:300,pat:[["Inhale",4],["Hold",4],["Exhale",4],["Hold",4]],txt:"Sit tall. Breathe in through your nose, hold, breathe out slowly, hold. Each step lasts 4 seconds. It calms the stress response."},{t:"4-7-8 breathing",sec:180,pat:[["Inhale",4],["Hold",7],["Exhale",8]],txt:"Sit or lie comfortably. Breathe in through your nose for 4, hold for 7, breathe out through your mouth for 8. Good before sleep."},{t:"Coherent breathing",sec:300,pat:[["Inhale",5],["Exhale",5]],txt:"Slow, even breaths, about six a minute. It relaxes the body and steadies your focus."},{t:"Meditation",sec:600,pat:[["Breathe in",5],["Breathe out",5]],txt:"Close your eyes and follow your breath. When a thought appears, notice it and come back to the breath. You do not need to clear your mind."},{t:"Grounding: 5-4-3-2-1",steps:[["5 things you can see","Look around slowly and name five things."],["4 things you can feel","Notice the floor, your clothes, the air."],["3 things you can hear","Listen for near and far sounds."],["2 things you can smell","Or recall two smells you like."],["1 thing you can taste","Notice your mouth, or take a sip of water."]]}];
+var NOTES={"Atomic Habits":[["The big idea","Small habits compound. Getting 1 percent better each day adds up, so focus on your systems and your identity, not only on goals. Ask what kind of person does this, and cast a vote for that person with every action."],["Four laws","Make it obvious, make it attractive, make it easy, make it satisfying. To break a habit, invert them: make it invisible, unattractive, hard and unsatisfying."],["Using it here","Lay out your clothes the night before, train at the same time each day, and track the streak. Never miss twice: if you slip, the next day is the one that counts."]],"Can’t Hurt Me":[["The big idea","Most people stop far below what they can do. The mind gives up long before the body does."],["Callousing the mind","Do hard things on purpose, especially when you do not feel like it. Each one is proof that you can keep going."],["Using it here","When a set gets hard, do three more reps. Treat the penalty quest as practice, not punishment."]],"Deep Work":[["The big idea","Focused work without distraction produces your best results, and it is becoming rare."],["Rules","Schedule deep work blocks, put your phone in another room, and set an end time so you can rest fully."],["Using it here","Use the focus timer for 25 to 90 minutes. Rest counts as part of the work."]],"Discipline Is Destiny":[["The big idea","Self-control is the foundation that lets you act on every other virtue."],["Practice","Start with small daily commitments, keep your word to yourself, and measure your progress."],["Using it here","Keep daily quests small enough that you never skip. The streak is what matters."]],"Meditations":[["The big idea","Focus on what you can control and accept what you cannot."],["Practice","Start each morning by preparing for difficulty, and end each evening by reviewing the day honestly."],["Using it here","Use the journal for three lines each night: what went well, what was hard, what is next."]]};
+var SC=0,PS=0,SS=null,AF=0,RD=null,RP=null,RPg=1,IMP=null,WP,AV,DBP;
+function tot(a){return a.reduce(function(s,q){return s+q.m},0)}
+function mt(d){var q=Q(d).filter(function(x){return x.k[0]=="e"}),p=st.p[d]||{};if(q.length&&q.every(function(x){return(p[x.k]||0)>=x.n}))st.tr[d]=1}
+function pop(title,msg,btns){ov('<div class="fr pp"><div class="tbox">'+title+'</div><p class="ctr">'+msg+'</p><div class="row" style="justify-content:center">'+(btns||[["OK","ok"]]).map(function(b){return'<button class="b" data-a="'+b[1]+'"'+(b[2]?' data-v="'+b[2]+'"':'')+'>'+b[0]+'</button>'}).join("")+'</div></div>');tn(1320,.1,.8);setTimeout(function(){tn(880,.18,.8)},130)}
+function ask(t,m,a,v){pop(t,m,[["Yes",a,v],["No","ok"]])}
+function row(q,p,me){var c=p[q.k]||0,dn=c>=q.n;return'<div class="pc'+(dn?' dn':'')+'"><div class="pb"><b>'+esc(q.t)+'</b><small>'+esc(q.s)+' · ~'+q.m+' min · +'+q.x+' XP</small></div><div class="pr"><span>['+c+' / '+q.n+']</span>'+(q.e!=null?'<button class="ib" data-a="ex" data-v="'+q.e+'" aria-label="How to">'+ic("info")+'</button>':'')+(me&&!dn?(q.r?'<button class="ad go" data-a="sq" data-v="'+q.k+'" aria-label="Start">▶</button>':'<button class="ad" data-a="pq" data-v="'+q.k+'" aria-label="Add one">+</button>'):'')+'</div></div>'}
+function qinfo(){var t=tod(),d=vd||t,me=d==t,qs=Q(d),p=st.p[d]||{},s=sess(d),g=qs.filter(isg);
+ov('<div class="qi"><button class="x" data-a="ok" aria-label="Close">×</button><div class="qh"><span class="ib2">'+ic("info")+'</span><span class="tb">Quest Info</span></div><p class="qm">[Daily Quest: <b>'+(s?GN[s.c]:"Quiet Recovery")+'</b> has Arrived.]</p><h3 class="gl2">Goal</h3>'+g.map(function(q){var c=p[q.k]||0,dn=c>=q.n;return'<div class="gi"><span>'+esc(q.t)+'</span><span>['+c+' / '+q.n+']</span>'+(me&&!dn?'<button class="ad go" data-a="sq" data-v="'+q.k+'" aria-label="Start">▶</button>':'<span class="chk">'+(dn?'✓':'')+'</span>')+'</div>'}).join("")+'<p class="wn">About '+tot(g)+' minutes. WARNING: Failure to complete the daily quest will result in an appropriate penalty.</p></div>',1)}
+function vQ(){var t=tod(),d=vd||t,n=dayNo(d),me=d==t,qs=Q(d),p=st.p[d]||{},s=sess(d),u=st.urg[d],g=qs.filter(isg),h="",pl="",cm="";
+qs.forEach(function(q){if((p[q.k]||0)>=q.n)cm+=row(q,p,me);else pl+=row(q,p,me)});
+h+=hud()+'<h2>Daily Quests <span>›</span></h2>'+strip(d)+'<p class="ctr mut" style="margin:-4px 0 12px">Season '+(SE(d)+1)+': '+SEN[SE(d)]+' · Day '+n+' of '+TOT()+' · '+DAYS[new Date(d+"T12:00:00").getDay()]+(s?' · Week '+s.w:'')+(me?' · today':'')+' · about '+tot(qs)+' min in total</p>';
+if(dayNo(t)>TOT())h+=win("System","<p>The journey is complete. Rebuild the plan under System to begin again.</p>");
+if(me&&planned(d)&&!(st.rdy||{})[d])h+=win("Readiness check",'<p>How does your body feel today? The plan adjusts to it.</p><div class="row" style="flex-wrap:wrap"><button class="g" data-a="rdy" data-v="1">Fresh</button><button class="g" data-a="rdy" data-v="2">OK</button><button class="g" data-a="rdy" data-v="3">Sore</button><button class="g" data-a="rdy" data-v="4">Wrecked</button></div>');
+if(me)h+='<div class="pc"><div class="pb"><small>TIME LEFT TODAY</small><b id="cd" class="cdt">--:--:--</b></div><div style="flex:1;max-width:120px"><div class="bar"><i id="cr" style="width:50%"></i></div></div></div>';
+if(me&&pen())h+=win("Penalty quest",'<p>You failed yesterday’s daily quests. '+(st.pen[t]==2?'Hard mode: 100 burpees, then a 2 km jog.':'Complete 50 burpees, in any number of sets.')+' Your day cannot be cleared until you finish it.</p><button class="b" data-a="pc">Penalty complete</button>',"bad qpen");
+h+='<button class="pc" data-a="qi"><div class="pb"><b>'+(s?GN[s.c]:"Quiet Recovery")+'</b><small>'+g.length+' tasks · about '+tot(g)+' min</small></div><span>›</span></button><div class="sec">Plan</div>'+(pl||'<p class="mut">Everything is cleared.</p>')+'<div class="sec">Completed</div>'+(cm||'<p class="mut">Nothing yet.</p>');
+if(me&&u)h+=win("Urgent quest",'<p>Emergency: do '+URG[u.i]+' within 3 minutes. Reward: +30 XP.</p>'+(u.d?'<p class="mut">Completed.</p>':'<button class="b" data-a="ug">Done</button>'),"warn");
+return h}
+function post(){var s=$("#strip");if(s){var c=s.querySelector(".sel");if(c)s.scrollTo({left:c.offsetLeft-s.clientWidth/2+c.clientWidth/2,behavior:SC?"smooth":"auto"});SC=1}
+if(tab=="pa"){if(!PS){PS=1;setTimeout(function(){var g=$(".gr .nw");if(g)g.scrollIntoView({block:"center",behavior:"smooth"})},120)}}else PS=0;
+if(tab=="lr"&&$("#sn"))$("#sn").value=(st.sn||{})[vd||tod()]||"";if(tab=="mi"&&st.nf&&$("#nfp"))$("#nfp").value=st.nf.pl||"";if(tab=="mi"&&$("#jt"))$("#jt").value=st.jr[tod()]||""}
+function lineChart(cv){var W=330,Hh=150,px=function(i){return 8+i*(W-16)/76},py=function(v){return Hh-8-v*(Hh-16)/100},o='<svg viewBox="0 0 '+W+' '+Hh+'" class="chs" role="img" aria-label="Estimated adaptation chart">';
+[0,50,100].forEach(function(v){o+='<line x1="8" x2="'+(W-8)+'" y1="'+py(v)+'" y2="'+py(v)+'" stroke="rgba(146,151,198,.25)"/>'});
+cv.L.forEach(function(l){var a="",b="";l[2].forEach(function(v,i){var s=px(i).toFixed(1)+","+py(v).toFixed(1)+" ";if(i+1<=cv.nt)a+=s;if(i+1>=cv.nt)b+=s});o+='<polyline points="'+a+'" fill="none" stroke="'+l[0]+'" stroke-width="2.5"/><polyline points="'+b+'" fill="none" stroke="'+l[0]+'" stroke-width="2" stroke-dasharray="4 4" opacity=".7"/>'});
+return o+'<line x1="'+px(cv.nt-1)+'" x2="'+px(cv.nt-1)+'" y1="4" y2="'+(Hh-4)+'" stroke="#FFD34D" stroke-dasharray="2 3"/></svg>'}
+function barChart(a,mx,col){var W=330,Hh=90,bw=(W-16)/a.length,o='<svg viewBox="0 0 '+W+' '+Hh+'" class="chs">';a.forEach(function(v,i){var h=Math.max(1,v/mx*(Hh-10));o+='<rect x="'+(8+i*bw+1)+'" y="'+(Hh-5-h)+'" width="'+Math.max(1,bw-2)+'" height="'+h+'" rx="2" fill="'+col+'"/>'});return o+'</svg>'}
+function logPg(b,n){var t=tod();b.pg+=n;st.pg[t]=(st.pg[t]||0)+n;var p=st.p[t]=st.p[t]||{};if(st.pg[t]>=10&&!p.read){p.read=1;gain(10,"int","Read 10 pages");chk(t)}if(b.tot&&b.pg>=b.tot&&!b.f){b.f=1;gain(100,"int","Book finished: "+b.t)}save()}
+function vLb(){return win("Library",st.books.map(function(b){var pc=b.tot?Math.min(100,b.pg/b.tot*100):0;return'<div class="bk"><b>'+esc(b.t)+'</b> <small>'+esc(b.a)+'</small>'+(b.k?'<p class="fix">'+esc(b.k)+'</p>':'')+bar("",pc,b.pg+" / "+(b.tot||"?")+" pages")+'<div class="row"><button class="b" data-a="ro" data-v="'+b.id+'">Read</button><button class="g" data-a="pb" data-v="'+b.id+'" data-n="10">+10 pages</button>'+(b.ty?'<button class="g" data-a="bdl" data-v="'+b.id+'">Remove</button>':'')+'</div></div>'}).join(""))
++win("Add a book",'<p class="fix">Import a PDF or text file to read it here, with dark mode. Files stay on this device.</p><input type="file" id="pf" accept="application/pdf,.pdf,text/plain,.txt"><p class="fix" style="margin-top:14px">Or track a book by pages:</p><div class="row"><label>Title<input id="bt" type="text" maxlength="40"></label><label style="max-width:90px">Pages<input id="bp" type="number" min="1"></label><button class="g" data-a="ab">Add</button></div>')}
+function idb(){return DBP||(DBP=new Promise(function(res,rej){var r=indexedDB.open("arise77",1);r.onupgradeneeded=function(){r.result.createObjectStore("f")};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}}))}
+function idbSet(k,v){return idb().then(function(d){return new Promise(function(res,rej){var t=d.transaction("f","readwrite");t.objectStore("f").put(v,k);t.oncomplete=res;t.onerror=function(){rej(t.error)}})})}
+function idbGet(k){return idb().then(function(d){return new Promise(function(res,rej){var r=d.transaction("f").objectStore("f").get(k);r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}})})}
+function idbDel(k){return idb().then(function(d){d.transaction("f","readwrite").objectStore("f").delete(k)})}
+function applyImg(k,d){if(k=="wall"){WP=d;var s=document.body.style;s.backgroundImage=d?'linear-gradient(rgba(7,5,26,.75),rgba(7,5,26,.92)),url("'+d+'")':"";s.backgroundSize="cover";s.backgroundAttachment="fixed"}else AV=d}
+function pick(k,f){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);var d=c.toDataURL("image/jpeg",.8);idbSet("img:"+k,d).then(function(){applyImg(k,d);render()})};im.src=r.result};r.readAsDataURL(f)}
+function lerpP(a,b,t){var n=Math.max(a.length,b.length),o=[];for(var i=0;i<n;i++){var x=a[i]!=null?a[i]:a[i-4],y=b[i]!=null?b[i]:b[i-4];o.push(x+(y-x)*t)}return o}
+function phs(q){var c=(st.p[tod()]||{})[q.k]||0,P=[],e,w,s;
+if(q.r=="ex"){e=q.e;w=EM[e];if(e==11)for(s=c+1;s<=q.n;s++){P.push({t:"auto",sec:180,l:"Round "+s+" of "+q.n,e:11,cb:COMBOS[(s-1)%COMBOS.length],set:1,txt:"Move on the balls of your feet and keep your hands up."});if(s<q.n)P.push({t:"rest",sec:60,l:"Rest",e:11,tip:"Shake out your arms and breathe slowly.",nx:"Round "+(s+1)})}
+else for(s=c+1;s<=q.n;s++){P.push(w[1]?{t:"auto",sec:w[1],l:q.t+": set "+s+" of "+q.n,e:e,set:1,txt:"Hold good form for the full time."}:{t:"tap",min:Math.max(10,(parseInt(q.s)||8)*2),l:q.t+": set "+s+" of "+q.n,e:e,set:1,txt:"Target: "+q.s+". Tap when you finish the set."});if(s<q.n)P.push({t:"rest",sec:rst(e,dayNo(tod())),l:"Rest",e:e,tip:"Shake out your muscles. Breathe in through your nose, out through your mouth.",nx:q.t+": set "+(s+1)})}}
+else if(q.r=="ch")P=CHP(q);else if(q.r=="wu")WU.forEach(function(x){P.push({t:x[2]?"auto":"tap",sec:x[2],min:x[3],l:x[1],e:x[0],txt:x[4]})});
+else if(q.r=="stu"){var n0=dayNo(tod()),T0=topic(n0),C0=colToday(Math.max(1,n0)),k=Math.max(2,Math.round(st.prof.sm/30)),w2=Math.max(10,Math.round((st.prof.sm-5*(k-1))/k)),i,nc=Math.ceil(k/2);for(i=1;i<=k;i++){var col=i<=nc;P.push({t:"auto",sec:w2*60,l:(col?"College":"Bug bounty")+": block "+i+" of "+k,cbt:col?"College topic":"Bug bounty topic",cb:col?"<b>"+esc(C0.cn)+"</b><br>"+esc(C0.mt)+"<br><br>Read the notes, then try the practice questions.":"<b>"+esc(T0.t)+"</b><br>"+esc(T0.s)+(T0.p?"<br><br><b>Practice:</b> "+esc(T0.p):""),nt:col?[C0.c,C0.m]:null,txt:"Phone away. One topic only. Take notes as you go."});if(i<k)P.push({t:"rest",sec:300,l:"Break",tip:"Stand up, drink water, rest your eyes. No phone.",nx:"Study block "+(i+1)})}}
+else if(q.r=="br")P.push(mp(MIND[0]));else if(q.r=="sl")P.push(mp(MIND[1]));return P}
+function mp(M){return{t:"breath",sec:M.sec,pat:M.pat,l:M.t,txt:M.txt}}
+function startQ(k){var q=Q(tod()).filter(function(x){return x.k==k})[0];if(!q||!q.r)return;if(q.r=="rd"||q.r=="fu"){tab=q.r=="rd"?"lr":"fu";render();window.scrollTo(0,0);toast(q.r=="rd"?"Open a book under Library and read. Pages count toward today’s quest.":"Tick each meal as you eat it.");return}var P=phs(q);if(P.length){SS={title:q.t,ph:P,i:0,q:q};ssGo(0)}}
+function startMind(i){var M=MIND[i];SS={title:M.t,ph:M.steps?M.steps.map(function(s){return{t:"tap",min:6,l:s[0],txt:s[1],e:s[2]}}):[mp(M)],i:0,q:null};ssGo(0)}
+function ssGo(i){SS.i=i;var P=SS.ph[i];P.t0=Date.now();SS.end=P.sec?P.t0+P.sec*1000:0;SS.lr=-1;SS.an=P.e!=null?{e:D[P.e],t0:performance.now()}:null;ssUI();tn(P.t=="rest"?660:880,.3,.8);cancelAnimationFrame(AF);AF=requestAnimationFrame(ssLoop)}
+function ssUI(){var P=SS.ph[SS.i],N=SS.ph.length,e=P.e!=null?D[P.e]:null,h='<div class="ssw"><div class="sst"><span>'+esc(SS.title)+'</span><span>'+(SS.i+1)+' / '+N+'</span></div><div class="bar"><i style="width:'+(SS.i/N*100)+'%"></i></div>';
+if(P.t=="breath")h+='<svg viewBox="0 0 200 200" class="bcs"><circle cx="100" cy="100" r="92" fill="none" stroke="rgba(63,169,255,.3)"/><circle id="bcc" cx="100" cy="100" r="40" fill="rgba(63,169,255,.25)" stroke="#3FA9FF" stroke-width="3"/></svg><div class="big2" id="bph"></div>';
+else if(e)h+='<svg id="sf" viewBox="0 -12 200 142" class="sfs"></svg>';
+h+='<h2 class="go2">'+esc(P.l)+'</h2><div class="big" id="stm"></div>';
+if(P.t=="rest")h+='<p class="ctr mut">'+P.tip+'</p><p class="ctr">Next: <b>'+esc(P.nx)+'</b></p>';else{h+=(P.txt?'<p>'+P.txt+'</p>':'')+(e&&P.t!="breath"?'<ol>'+e.s.map(function(x){return"<li>"+x+"</li>"}).join("")+'</ol><p class="fix">'+e.f+'</p>':'');if(P.cb)h+='<div class="w"><div class="th">'+(P.cbt||"Combo")+'</div><p style="margin:0">'+P.cb+'</p></div>'+(P.nt?'<button class="g wide" data-a="on" data-v="'+P.nt[0]+'-'+P.nt[1]+'">Open notes</button>':'')}
+h+=(P.t=="tap"?'<button class="b wide" id="sb" data-a="sd" disabled>Done</button>':'')+'<button class="x2" data-a="ab2">Abandon quest</button></div>';var s=$("#ss");s.innerHTML=h;s.hidden=false;s.scrollTop=0}
+function breath(P,n){var e=(n-P.t0)/1000,L=P.pat.reduce(function(s,x){return s+x[1]},0),u=e%L,r=40,nm="",ct=0;for(var i=0;i<P.pat.length;i++){var x=P.pat[i],ins=/in/i.test(x[0]),ex=/out|exhale/i.test(x[0]);if(u<x[1]){var f=u/x[1];r=ins?40+50*f:ex?90-50*f:r;nm=x[0];ct=Math.ceil(x[1]-u);break}u-=x[1];r=ins?90:ex?40:r}
+$("#bcc").setAttribute("r",r);$("#bph").textContent=nm+" "+ct}
+function ssLoop(){if(!SS)return;var P=SS.ph[SS.i],n=Date.now(),rem=P.sec?Math.max(0,Math.ceil((SS.end-n)/1000)):0,el=$("#stm");if(el)el.textContent=P.sec?fmt(rem):"";
+if(P.t=="tap"){var b=$("#sb"),w=Math.ceil(P.min-(n-P.t0)/1000);if(b){b.disabled=w>0;b.textContent=w>0?"Done ("+w+")":"Done"}}
+else if(n>=SS.end){ssNext();return}else if(rem<=3&&rem!=SS.lr){SS.lr=rem;tn(660,.12,.8)}
+var f=$("#sf");if(f&&SS.an){var ps=SS.an.e.p,k=ps.length,u=(performance.now()-SS.an.t0)/1600%k,i=Math.floor(u),fr=Math.min(1,(u-i)*1.25),ez=(1-Math.cos(Math.PI*fr))/2;f.innerHTML='<line class="gl" x1="8" y1="120" x2="192" y2="120"/>'+(SS.an.e.x||"")+fig(lerpP(ps[i],ps[(i+1)%k],ez),SS.an.e.f1)}
+if($("#bcc"))breath(P,n);AF=requestAnimationFrame(ssLoop)}
+function ssNext(){var P=SS.ph[SS.i],q=SS.q;if(P.set&&q)prog(q.k,1);if(SS.i+1>=SS.ph.length)ssEnd();else ssGo(SS.i+1)}
+function ssEnd(){var q=SS.q,ti=SS.title;cancelAnimationFrame(AF);$("#ss").hidden=true;SS=null;if(q&&q.r!="ex"){var c=(st.p[tod()]||{})[q.k]||0;if(c<q.n)prog(q.k,q.n-c)}setTimeout(function(){tn(1175,.5)},250);pop("Quest complete","[Quest Completed: <b>"+esc(ti)+"</b>]<br>Well done, Player.",[["Continue","ok"]])}
+function ssQuit(){cancelAnimationFrame(AF);$("#ss").hidden=true;SS=null;st.xp=Math.max(0,st.xp-20);save();$("#o").hidden=true;toast("[ WARNING ] Quest abandoned. -20 XP","bad");render()}
+function ldPdf(){return new Promise(function(res,rej){if(window.pdfjsLib)return res();var u=["lib/pdf.min.js","https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"],i=0;(function nx(){if(i>=u.length)return rej(new Error("The PDF engine is not available. Use the APK built with the provided workflow, or connect to the internet."));var s=document.createElement("script");s.src=u[i];s.onload=function(){pdfjsLib.GlobalWorkerOptions.workerSrc=u[i].replace("pdf.min.js","pdf.worker.min.js");res()};s.onerror=function(){i++;nx()};document.head.appendChild(s)})()})}
+function pgShow(){RP.getPage(RPg).then(function(pg){var c=$("#pc");if(!c)return;var w=$("#rdc").clientWidth-8,k=w/pg.getViewport({scale:1}).width,r=window.devicePixelRatio||1,v=pg.getViewport({scale:k*r});c.width=v.width;c.height=v.height;c.style.width=w+"px";c.style.height=v.height/r+"px";pg.render({canvasContext:c.getContext("2d"),viewport:v});$("#pn").textContent=RPg+" / "+RP.numPages;RD.last=RPg;if(RPg>(RD.mx||0)){logPg(RD,RPg-(RD.mx||0));RD.mx=RPg}save();$("#rdc").scrollTop=0})}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.dataset.a,v=b.dataset.v,o=$("#o"),r=$("#rd");
+if(a=="sq")startQ(v);else if(a=="mi")startMind(+v);
+else if(a=="sd"){if(SS&&!b.disabled)ssNext()}
+else if(a=="ab2")ask("Warning","Abandon this quest? You will lose 20 XP.","ab3");else if(a=="ab3")ssQuit();
+else if(a=="gd"){vd=v;render()}
+else if(a=="ro")openRd(v);else if(a=="rc"){r.hidden=true;RD=null;render()}
+else if(a=="rt"){var s=st.rd,n=s.th=="dark"?"day":s.th=="day"?"sepia":"dark";s.th=n;r.className="rdw "+n;save()}
+else if(a=="rf"){var s2=st.rd;s2.fs=Math.max(13,Math.min(30,s2.fs+ +v*2));$("#rdc").style.fontSize=s2.fs+"px";save()}
+else if(a=="pp"&&RP){RPg=Math.min(RP.numPages,Math.max(1,RPg+ +v));pgShow()}
+else if(a=="rdg"){logPg(RD,10);toast("+10 pages logged.")}
+else if(a=="ib"&&IMP){var nm=($("#bn").value||"Untitled").trim(),id=Date.now(),im=IMP;idbSet("pdf"+id,im.d).then(function(){st.books.push({id:id,t:nm,a:"Imported",tot:im.ty=="txt"?Math.max(1,Math.round(im.d.length/1800)):0,pg:0,k:"",ty:im.ty});save();o.hidden=true;IMP=null;render();toast("Added to your library.")}).catch(function(){toast("Could not store that file.","warn")})}
+else if(a=="bdl")ask("Warning","Remove this book and its file?","bd2",v);
+else if(a=="bd2"){idbDel("pdf"+v).catch(function(){});st.books=st.books.filter(function(x){return x.id!=v});save();o.hidden=true;render()}
+else if(a=="ci"){idbSet("img:"+v,"").then(function(){applyImg(v,"");render()})}});
+document.addEventListener("change",function(e){var t=e.target;if(t.id=="pf"&&t.files[0]){var f=t.files[0],pdf=/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name),r=new FileReader();r.onload=function(){IMP={d:r.result,ty:pdf?"pdf":"txt"};pop("New book",'<label>Book name<input id="bn" type="text" maxlength="60" value="'+esc(f.name.replace(/\.(pdf|txt)$/i,""))+'"></label>',[["Add to library","ib"],["Cancel","ok"]])};if(pdf)r.readAsArrayBuffer(f);else r.readAsText(f);t.value=""}
+else if((t.id=="iw2"||t.id=="ia")&&t.files[0])pick(t.id=="iw2"?"wall":"avatar",t.files[0])});
+["wall","avatar"].forEach(function(k){try{idbGet("img:"+k).then(function(d){if(d){applyImg(k,d);render()}}).catch(function(){})}catch(e){}});
+
+var ROAD="How the web works::DNS, TCP, HTTP request and response flow.::Capture one page load in DevTools and label each request.|HTTP in depth::Methods, status codes, headers, cookies.::Replay requests with curl and change the headers.|Browser DevTools::Network, Elements, Sources and Storage tabs.::Find a site’s cookies, JS files and API calls.|Burp Suite setup::Install Burp Community, proxy your browser, trust its certificate.::Intercept and edit one request on a practice site.|Linux and shell basics::Files, grep, curl, pipes.::Write a one-line command that pulls all links from a page.|HTML, JavaScript and JSON::How pages and APIs are built.::Read a page’s JS and list the endpoints it calls.|Lab day: set up targets::Run OWASP Juice Shop or DVWA, or use PortSwigger labs.::Solve one beginner lab and write notes.|Ethics, scope and law::Bug bounty policies: scope, safe harbor, forbidden actions.::Summarize one public program’s rules in your own words.|OWASP Top 10 overview::Read each category once.::Write one real-world example sentence for each.|Same-origin policy::Origins, and what a script may read.::Explain why one site cannot read another site’s page.|CORS and CSP basics::Headers that relax or restrict the browser.::Inspect the headers of three sites and note what they allow.|Encoding and hashing::URL, Base64, HTML encoding, hashes.::Decode a few values by hand and with tools.|Authentication vs authorization::Who you are versus what you may do.::Map the login, session and permission steps of an app.|Lab day: recon a practice app::Click through every feature.::List pages, inputs and user roles in a notes file.|XSS: reflected::Input reflected into HTML.::Solve a PortSwigger reflected XSS lab.|XSS: stored::Input saved and shown to others.::Solve a stored XSS lab and note the data flow.|XSS: DOM-based::Sources and sinks in client-side JS.::Solve a DOM XSS lab and trace the sink.|XSS contexts and filters::HTML, attribute and JS-string contexts; encoding and filter ideas.::Solve two labs with filtering.|XSS impact and CSP::What an attacker can do, and how CSP limits it.::Read a CSP and explain what it blocks.|XSS in the wild::Read three disclosed XSS reports.::Note the context, the payload and the fix for each.|Lab day: XSS set::Finish four XSS labs.::Write one clean proof of concept with impact.|SQL injection basics::How queries are built and broken.::Solve the basic SQLi login labs.|SQLi: UNION attacks::Column counts and types, data retrieval.::Solve the UNION labs.|SQLi: blind attacks::Boolean and time-based inference.::Solve one blind lab.|Second-order and NoSQL injection::Stored payloads and operator injection.::Solve a NoSQL injection lab.|OS command injection::Shell metacharacters and blind detection.::Solve the command injection labs.|Fixing injection::Parameterized queries and allow lists.::Rewrite a vulnerable snippet using the OWASP cheat sheet.|Lab day: injection set::Four mixed labs.::Write a short report for one of them.|Weak login and brute force::Rate limits, lockouts, user enumeration.::Solve the authentication lab on enumeration.|Password reset flaws::Token handling and host header poisoning.::Map a reset flow and list its weak points.|Session management::Cookies, flags, fixation, expiry.::Review a site’s session cookies and flags.|JWT attacks::Structure, signing, weak keys, algorithm confusion.::Solve two JWT labs.|OAuth and SSO::Flows, redirect URI and state issues.::Solve an OAuth lab.|2FA and MFA bypass ideas::Logic flaws, brute force, response manipulation.::Solve a 2FA lab.|Lab day: authentication::Mixed labs.::Write notes on the three most common mistakes you saw.|IDOR basics::Object references in URLs and bodies.::Solve the IDOR labs.|BOLA and BFLA in APIs::Object-level and function-level authorization.::Test an API lab with two accounts.|Privilege escalation::Horizontal and vertical access control.::Solve two access control labs.|Mass assignment::Extra parameters that change roles or prices.::Find a hidden parameter in a practice app.|Business logic flaws::Flows that break the rules.::Solve two logic labs.|Race conditions::Parallel requests and time-of-check problems.::Solve a race condition lab.|Lab day: access control::Mixed labs.::Write a clean report for one finding.|SSRF basics::Making a server request URLs for you.::Solve the basic SSRF labs.|SSRF filters and impact::Allow lists, bypasses, cloud metadata risks.::Solve a filter bypass lab.|Path traversal and file inclusion::Reading files with dot-dot paths.::Solve the path traversal labs.|File upload flaws::Type checks, extensions, storage paths.::Solve two upload labs.|XXE::XML parsers and external entities.::Solve an XXE lab.|SSTI and deserialization intro::Template engines and unsafe object loading.::Solve one SSTI lab.|Lab day: server-side set::Mixed labs.::Write a report for one server-side bug.|CSRF::Cross-site requests with a victim’s cookies, tokens, SameSite.::Solve two CSRF labs.|Clickjacking and open redirects::Framing, redirect parameters and chaining.::Solve a clickjacking lab and find an open redirect.|CORS misconfiguration::Reflected origins and credentials.::Solve the CORS labs.|postMessage and DOM clobbering::Cross-window messaging and unsafe DOM access.::Solve one DOM clobbering lab.|Prototype pollution::Polluting object prototypes in JS.::Solve a client-side prototype pollution lab.|WebSockets::Message handling and cross-site hijacking.::Solve a WebSocket lab.|Lab day: client-side set::Mixed labs.::Write notes comparing impact of each bug.|REST API testing::Endpoints, methods, auth, parameter tampering.::Map an API with Burp and test two endpoints.|GraphQL::Introspection, batching, authorization gaps.::Solve a GraphQL lab.|Rate limiting and abuse::Limits, bypass ideas, business impact.::Test a practice login for limits.|Request smuggling intro::How front and back ends disagree on request length.::Read the PortSwigger intro and solve one lab.|Cache poisoning and host header::Unkeyed inputs and trusting the Host header.::Solve one cache lab.|Subdomain takeover::Dangling DNS records.::Read three takeover reports and note the signs.|Lab day: API set::Mixed API labs.::Write a short API testing checklist.|Subdomain enumeration::Passive sources and tools such as subfinder.::Enumerate a program’s in-scope domain.|Content discovery::Wordlists and tools such as ffuf.::Find hidden paths on a practice app.|JavaScript analysis::Endpoints, keys and logic in JS files.::Extract endpoints from a site’s JS.|Parameter discovery::Hidden and unused parameters.::Test a few endpoints for extra parameters.|Fingerprinting and screenshots::Technologies, versions, quick overviews.::Probe live hosts with httpx and review the results.|Automate recon::Bash or Python pipelines.::Write a script that chains two tools and saves results.|Lab day: recon pipeline::Run it on in-scope assets or a lab.::Document your methodology step by step.|Choosing a program::Scope, payouts, response times, competition.::Shortlist three programs and justify one.|Reading disclosed reports::Patterns in accepted bugs.::Read five reports and note root causes.|Writing a great report::Title, steps, impact, fix, clear proof.::Rewrite one of your lab write-ups as a report.|Severity and CVSS::Impact, likelihood, scoring.::Score three past findings and justify each.|Triage and communication::Working with triagers, handling duplicates.::Draft a polite reply to a duplicate or low-severity ruling.|Mock hunt::Two focused hours on one in-scope target.::Keep notes on every lead, even dead ends.|Review and plan::Review all notes and weak areas.::Plan your next four weeks of study.".split("|");
+var RES=["MDN Web Docs, Burp Suite Community, OWASP Juice Shop","OWASP Top 10, HackerOne Hacker101, program policies","PortSwigger Web Security Academy: XSS, OWASP XSS cheat sheet","PortSwigger Academy: SQL injection, OS command injection","PortSwigger Academy: authentication, JWT, OAuth","PortSwigger Academy: access control, business logic, race conditions","PortSwigger Academy: SSRF, file upload, XXE, SSTI","PortSwigger Academy: CSRF, CORS, DOM-based, prototype pollution","PortSwigger Academy: API testing, GraphQL, smuggling, cache poisoning","subfinder, httpx, ffuf, nuclei (only on in-scope targets)","Disclosed reports on HackerOne and Bugcrowd, program policies"];
+var WKN=["Foundations","Security basics and rules","Cross-site scripting","Injection","Authentication","Access control","Server-side bugs","Client-side bugs","APIs and modern attacks","Recon and automation","Real-world hunting"];
+var ADV=["Deep dive: XSS bypasses","Deep dive: SQLi and NoSQLi","Deep dive: auth and OAuth","Deep dive: access control and logic","Deep dive: SSRF and cloud metadata","Deep dive: request smuggling and caching","Deep dive: GraphQL and APIs","Deep dive: race conditions","Android app basics","Cloud basics: S3 and IAM mistakes","Source code review for web bugs","Tool building: your own scripts","Recon at scale and monitoring","CTF week","Report polish: rewrite old reports","Open-source bug hunting"];
+var DWA=["Concept day: study the theme in your best resource and take notes.","Lab day: solve one lab or challenge on the theme.","Lab day: solve a harder one, or redo yesterday’s without hints.","Reading day: read three disclosed reports on this theme and note each root cause.","Hunt day: 90 focused minutes on a program you picked, in scope only, looking for this class of bug.","Write-up day: turn one finding or lab into a report.","Review day: fix gaps in your notes and plan next week."];
+var SEN=["Awakening","Iron Will","Shadow Army","Monarch’s Domain","Sovereign","Eclipse","Ascension","Dominion","Transcendence","Beyond","Final Trial"];
+var SL=[["bf","Breakfast"],["ln","Lunch (pack it for class)"],["sn","Snack before training"],["dn","Dinner after training"],["bd","Before bed (optional)"]];
+var MEALS={bf:[["Oats cooked in soy milk with peanut butter and banana (~25 g protein)","Oats in milk, 3 scrambled eggs and a banana (~35 g)"],["Tofu scramble with whole-wheat toast and fruit (~28 g)","Egg omelette with 2 slices of toast and fruit (~30 g)"],["Idli or dosa with sambar and peanut chutney, plus a glass of soy milk (~22 g)","Idli or dosa with sambar and 2 boiled eggs (~24 g)"],["Smoothie: soy milk, banana, oats, peanut butter (~25 g)","Curd or Greek yogurt with oats, banana, nuts and 2 boiled eggs (~32 g)"]],
+ln:[["Rice, dal and a soya-chunk or chickpea curry with salad (~35 g)","Rice, dal and chicken curry with salad (~45 g)"],["Rajma or chana with brown rice and vegetables (~30 g)","Fish curry with rice and a vegetable side (~40 g)"],["Tofu or soya wrap with vegetables and hummus (~32 g)","Chicken or egg wrap with vegetables and curd (~40 g)"],["Lentil and vegetable khichdi with peanuts (~28 g)","Egg fried rice with vegetables and curd (~35 g)"]],
+sn:[["Banana with 2 tbsp peanut butter (~8 g)","Banana with a glass of milk or a boiled egg (~12 g)"],["Roasted chana and a fruit (~12 g)","Curd with fruit (~10 g)"],["Sprouts salad or a peanut-jaggery bar (~10 g)","2 boiled eggs and a fruit (~13 g)"],["Soy milk and a handful of nuts (~12 g)","Milk and a handful of nuts (~12 g)"]],
+dn:[["Tofu or tempeh stir-fry with rice and vegetables (~38 g)","Chicken with rice and vegetables (~45 g)"],["Soya-chunk curry, 3 chapatis and salad (~40 g)","Fish or egg curry, 3 chapatis and salad (~42 g)"],["Dal, rice or quinoa and a lentil side (~30 g)","Paneer or chicken tikka with chapati and salad (~42 g)"],["Chickpea and spinach curry with rice and soy yogurt (~28 g)","Egg curry with rice, vegetables and curd (~35 g)"]],
+bd:[["Soy milk, or soy yogurt with a spoon of peanut butter (~12 g)","Warm milk, or curd with a few nuts (~12 g)"],["A handful of peanuts and a banana (~10 g)","Cottage cheese or curd with fruit (~14 g)"],["Roasted chana (~10 g)","A boiled egg and milk (~14 g)"]]};
+IC.fuel="M5 3v7a3 3 0 003 3v8M8 3v7M11 3v7a3 3 0 01-3 3M18 3c-2 2-3 5-3 8h3v10";
+MIND.push({t:"Urge toolkit",steps:[["Pause","Stop what you are doing. Name it: this is an urge, and it will pass in minutes."],["Move your body","Do 20 push-ups or squats right now.",0],["Change the scene","Leave the room, step outside, or wash your face."],["Breathe","Breathe in for 4, out for 6, ten times."],["Redirect","Open your study topic or your journal and work for 10 minutes."]]});
+function TOT(){return st.ext?777:77}
+function SE(d){return Math.floor((Math.max(1,dayNo(d))-1)/77)}
+function so(d){return SE(d||tod())*77}
+function planned(d){var p=st.prof,n=dayNo(d);return !!p&&n>=1&&n<=TOT()&&PL[p.days].charAt(new Date(d+"T12:00:00").getDay())!="-"}
+function rj(d){var v=(st.rdy||{})[d];return v==1?1:v==3?-1:(!v&&st.tr[addd(d,-1)]&&st.tr[addd(d,-2)]?-1:0)}
+function topic(n){if(n<1)return null;if(n<=77){var a=ROAD[n-1].split("::");return{t:a[0],s:a[1],p:a[2],r:RES[Math.floor((n-1)/7)]}}var k=n-78;return{t:ADV[Math.floor(k/7)%ADV.length],s:DWA[k%7],p:"",r:"Your best resources for this theme, plus disclosed reports"}}
+function fuel(d){var p=st.prof,kg=p.kg||65,tr=!!sess(d),pr=Math.round(kg*(p.diet=="vegan"?2:1.8)),kc=Math.round((kg*(tr?36:32)+(p.goal=="fat"?-300:250))/50)*50,fat=Math.round(kg*.9);return{pr:pr,kc:kc,fat:fat,cb:Math.round((kc-pr*4-fat*9)/4),tr:tr}}
+function nfd(){return st.nf?Math.max(0,Math.round((new Date(tod()+"T12:00:00")-new Date(st.nf.s+"T12:00:00"))/864e5)):0}
+function strip(d){var t=tod(),S=so(d),h='<div class="strip" id="strip">',e=Math.min(77,TOT()-S);for(var i=0;i<e;i++){var x=addd(st.start,S+i),c="dc";if(st.fin[x])c+=st.fin[x]=="s"?" sh":" ok";else if(x<t)c+=" ms";if(x==d)c+=" sel";if(x==t)c+=" td";h+='<button class="'+c+'" data-a="gd" data-v="'+x+'"><small>'+"SMTWTFS".charAt(new Date(x+"T12:00:00").getDay())+'</small>'+(S+i+1)+'</button>'}return h+'</div>'}
+var SV=null;
+function curves(S){var t=tod(),n=dayNo(t),nt=Math.max(1,Math.min(77,n-S)),sA=0,cl=0,N=[],M=[],E=[],H=[],i,d,e=Math.min(S+77,TOT());
+for(i=1;i<=e;i++){d=addd(st.start,i-1);if(i<=n){sA+=st.tr[d]?1:0;cl+=st.fin[d]?1:0}else{sA+=sess(d)?1:0;cl+=1}
+if(i>S){N.push(100*(1-Math.exp(-sA/5)));M.push(100*(1-Math.exp(-Math.max(0,sA-6)/28)));E.push(100*(1-Math.exp(-sA/18)));H.push(100*(1-Math.exp(-cl/28)))}}
+return{nt:nt,L:[["#3FA9FF","Neural",N],["#B79CFF","Muscle",M],["#5CFFB0","Endurance",E],["#FFD34D","Habit",H]]}}
+function vPa0(){var t=tod(),n=dayNo(t),k=SV!=null?SV:SE(t),S=k*77,len=Math.min(77,TOT()-S),f=0,g="",cv=curves(S),dc=[],wk=[0,0,0,0,0,0,0,0,0,0,0],i,d,tc=Object.keys(st.fin).length;
+for(i=0;i<len;i++){d=addd(st.start,S+i);var c="c",ab=S+i+1;if(st.fin[d]){c+=st.fin[d]=="s"?" sh":" ok";f++}else if(d<t)c+=" ms";if(d==t)c+=" nw";if(MS[ab])c+=" mi";g+='<div class="'+c+'">'+ab+'</div>';
+var qs=Q(d),p=st.p[d]||{},dn=qs.filter(function(q){return(p[q.k]||0)>=q.n}).length,sets=0;Object.keys(p).forEach(function(x){if(x[0]=="e")sets+=p[x]});dc.push(ab<=n?dn/qs.length*100:0);wk[Math.floor(i/7)]+=ab<=n?sets:0}
+var mx=Math.floor((TOT()-1)/77);
+return win("Season "+(k+1)+": "+SEN[k],'<div class="nv"><button class="g" data-a="sv" data-v="-1">◀</button><div><b>Days '+(S+1)+' to '+(S+len)+'</b><small>Journey of '+TOT()+' days</small></div><button class="g" data-a="sv" data-v="1">▶</button></div><div class="stt"><div><b>'+Math.min(n,TOT())+'</b>DAY</div><div><b>'+tc+'</b>CLEARED</div><div><b>'+streak()+'</b>STREAK</div><div><b>'+st.best+'</b>BEST</div></div><div class="gr">'+g+'</div><p class="fix">Violet squares are cleared days, blue are Streak Shields.</p>')
++win("Body and brain (estimated)",lineChart(cv)+'<div class="lg">'+cv.L.map(function(l){return'<span><i style="background:'+l[0]+'"></i>'+l[1]+'</span>'}).join("")+'</div><p class="fix">Solid lines follow your real training so far. Dashed lines project the plan from today. This is a simple model of typical timelines, not a measurement.</p>')
++win("What happens when",'<div class="tl"><p><b>Weeks 1–2.</b> Your nervous system learns the movements and recruits more muscle fibres. You get stronger quickly while muscle size barely changes.</p><p><b>Weeks 3–6.</b> Endurance and technique improve. Muscles start to adapt, and tendons begin to toughen, more slowly.</p><p><b>Weeks 6–12.</b> Muscle growth becomes visible if you train consistently, sleep well and eat enough protein.</p><p><b>Day 66.</b> Habit research found it takes about 66 days on average for a routine to feel automatic, with a wide range between people.</p></div>')
++win("Daily completion",barChart(dc,100,"#B79CFF"))+win("Sets per week",barChart(wk,Math.max.apply(null,wk.concat([10])),"#3FA9FF"))
++win("Milestones",Object.keys(MS).filter(function(m){return+m<=TOT()}).map(function(m){return'<span class="bd'+(tc>=+m?' on':'')+'">Day '+m+': '+MS[m]+'</span>'}).join(""))}
+function vBB(){var d=vd||tod(),n=dayNo(d),T0=topic(n),p=st.prof,done=((st.p[d]||{}).study||0)>=1,h="",i,w;
+h+=win("Today’s study",T0?'<h3>'+esc(T0.t)+'</h3><p>'+esc(T0.s)+'</p>'+(T0.p?'<p><b>Practice:</b> '+esc(T0.p)+'</p>':'')+'<p class="fix">Resources: '+esc(T0.r)+'</p><p class="fix">Mandatory block: '+p.stt+', '+p.sm+' minutes. Only test systems you own or have written permission to test.</p>'+(done?'<p class="mut">Study block done.</p>':(d==tod()?'<button class="b wide" data-a="sq" data-v="study">Start study block</button>':'')):'<p class="mut">Pick a day in the challenge to see its topic.</p>');
+h+=win("Study notes",'<textarea id="sn" rows="5" placeholder="What did you learn? Payloads, commands, mistakes, ideas."></textarea><button class="b wide" data-a="sns">Save notes</button>');
+var rm="";for(w=0;w<11;w++){var ds=0,li="";for(i=0;i<7;i++){var x=w*7+i+1,dd=addd(st.start,x-1),ok=((st.p[dd]||{}).study||0)>=1;if(ok)ds++;li+='<p class="fix" style="margin:2px 0">'+(ok?'✓ ':'· ')+'Day '+x+': '+esc(ROAD[x-1].split("::")[0])+'</p>'}rm+='<details><summary><b>Week '+(w+1)+': '+WKN[w]+'</b> <small class="mut">'+ds+'/7 · '+esc(RES[w])+'</small></summary>'+li+'</details>'}
+return h+win("Bug bounty roadmap",rm+'<p class="fix">After day 77 the roadmap becomes weekly advanced themes: '+ADV.slice(0,6).map(esc).join(", ")+' and more, each with concept, lab, reading, hunt and write-up days.</p>')}
+function vFuel(){var d=vd||tod(),f=fuel(d),vg=st.prof.diet=="vegan",ml=(st.ml||{})[d]||{},n=Math.max(0,dayNo(d)),h;
+h=win("Fuel target · "+(f.tr?"training day":"rest day"),'<div class="stt"><div><b>'+f.kc+'</b>KCAL</div><div><b>'+f.pr+' g</b>PROTEIN</div><div><b>'+f.cb+' g</b>CARBS</div><div><b>'+f.fat+' g</b>FAT</div></div><div class="row"><button class="'+(vg?'b':'g')+'" data-a="dt" data-v="vegan">Vegan</button><button class="'+(vg?'g':'b')+'" data-a="dt" data-v="nonveg">Non-vegan</button></div><p class="fix">Rough estimates from your weight and goal, not medical advice. '+(vg?'On a vegan diet aim for the higher end of protein, and make sure you have a reliable vitamin B12 source. ':'Spread protein across 4 meals. ')+(f.tr?'Training day: add an extra serving of rice or roti around your workout.':'Rest day: keep protein the same and eat a little less rice or roti.')+' Drink 2.5 to 3 litres of water.</p>');
+SL.forEach(function(s,i){var o=MEALS[s[0]][(n+i)%MEALS[s[0]].length],a=vg?['Vegan',o[0],'Non-vegan',o[1]]:['Non-vegan',o[1],'Vegan',o[0]];h+='<div class="pc'+(ml[s[0]]?' dn':'')+'"><div class="pb"><b>'+s[1]+'</b><small><b>'+a[0]+':</b> '+esc(a[1])+'</small><small>'+a[2]+': '+esc(a[3])+'</small></div>'+(d==tod()&&!ml[s[0]]?'<button class="ad" data-a="ml" data-v="'+s[0]+'" aria-label="Mark eaten">✓</button>':'')+'</div>'});
+return h}
+function bk(){return JSON.stringify({arise:1,v:3,at:new Date().toISOString(),st:st})}
+function dl(j,nm){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));a.download=nm;document.body.appendChild(a);a.click();a.remove();toast("Backup file created.")}
+function exportBk(){var j=bk(),nm="arise77-backup-"+tod()+".json",C=window.Capacitor&&Capacitor.Plugins;if(C&&C.Filesystem&&C.Share){C.Filesystem.writeFile({path:nm,data:j,directory:"CACHE",encoding:"utf8"}).then(function(r){return C.Share.share({title:"Arise 77 backup",url:r.uri})}).catch(function(){dl(j,nm)})}else dl(j,nm)}
+var IMB=null;
+function readBk(txt){try{var o=JSON.parse(txt);if(!o.arise||!o.st)throw 0;IMB=o;ask("Restore backup","Replace all current progress with this backup from "+esc((o.at||"").slice(0,10))+"?","bk2")}catch(x){toast("That is not an Arise backup.","warn")}}
+function vApp(){return win("Backup and transfer",'<p class="fix">Your progress lives on this device. Export a backup file to move it to another phone or to a newer version of the app, then import it there. Wallpaper, imported books and the alarm sound are not included.</p><div class="row"><button class="b" data-a="xb">Export backup</button><button class="g" data-a="cb">Copy as text</button></div><label>Import a backup file<input type="file" id="bf" accept=".json,application/json"></label><label>Or paste backup text<textarea id="bp2" rows="3"></textarea></label><button class="g wide" data-a="bkp">Import pasted text</button>')
++win("Feel",'<label class="ck"><input type="checkbox" id="hp"'+(st.hap===0?'':' checked')+'> Haptic feedback</label><label class="ck"><input type="checkbox" id="sn2"'+(st.snd===0?'':' checked')+'> System sounds</label>')+win("Appearance",'<p class="fix">Pick any image from your phone. It is stored on this device only.</p><label>Wallpaper<input type="file" id="iw2" accept="image/*"></label><label>Status portrait<input type="file" id="ia" accept="image/*"></label><div class="row"><button class="g" data-a="ci" data-v="wall">Clear wallpaper</button><button class="g" data-a="ci" data-v="avatar">Clear portrait</button></div>')}
+var TS=0;
+function sound(test){var a=st.alm;clearTimeout(TS);if(a.snd=="custom"&&FILE){try{AU=AU||new Audio();AU.src=FILE;AU.loop=!test;AU.volume=a.vol;AU.currentTime=0;AU.play();if(test)TS=setTimeout(function(){AU.pause()},10000)}catch(e){}}else(SND[a.snd]||SND.ping)()}
+try{idbGet("alarm").then(function(f){if(f&&f.size)FILE=URL.createObjectURL(f)}).catch(function(){})}catch(e){}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.dataset.a,v=b.dataset.v,o=$("#o"),t=tod();
+if(a=="sv"){var k=(SV!=null?SV:SE(t))+ +v;if(k>=0&&k<=Math.floor((TOT()-1)/77)){SV=k;render()}}
+else if(a=="rdy"){st.rdy[t]=+v;save();toast(v==4?"Rest day set. Recovery is training too.":v==3?"One set fewer on every exercise today.":v==1?"One extra set today.":"Plan unchanged.");render()}
+else if(a=="dt"){st.prof.diet=v;save();render()}
+else if(a=="ml"){var m=st.ml[t]=st.ml[t]||{};m[v]=1;var c=["bf","ln","sn","dn"].filter(function(x){return m[x]}).length,p=st.p[t]=st.p[t]||{};if(c>=4&&!(p.fuel>=4)){p.fuel=4;gain(10,"sta","Fuel plan");chk(t)}else if(!(p.fuel>=4))p.fuel=c;save();render()}
+else if(a=="sns"){var s=$("#sn").value;st.sn[vd||t]=s;save();toast("Notes saved.")}
+else if(a=="ext"){o.hidden=true;st.gold+=100;addxp(200);save();render();setTimeout(function(){pop("Choose your path","Pick the martial art that shapes your training from here on. You can change it any time under System.",[["Boxing","art","box"],["Karate","art","karate"],["MMA","art","mma"],["Taekwondo","art","tkd"],["Muay Thai","art","mt"],["Mixed","art","mix"]])},900)}
+else if(a=="xb")exportBk();else if(a=="cb"){try{navigator.clipboard.writeText(bk()).then(function(){toast("Backup copied.")},function(){toast("Copy failed. Use Export instead.","warn")})}catch(x){toast("Copy failed. Use Export instead.","warn")}}
+else if(a=="bkp")readBk($("#bp2").value);
+else if(a=="bk2"&&IMB){try{localStorage.setItem("arise77",JSON.stringify(IMB.st))}catch(x){}load();IMB=null;o.hidden=true;dailyCheck();render();toast("Backup restored.")}
+else if(a=="nfs"){st.nf={s:t,b:0,a:[]};save();render()}
+else if(a=="nfr"){var nf0=st.nf,lm=nf0.lim==null?2:nf0.lim;if(nfSlips()<lm){(nf0.sl=nf0.sl||[]).push(t);save();render();toast("Logged. Inside your monthly allowance, so your streak continues.")}else ask("Reset streak","You have used this month’s allowance. Reset the streak and start again today? No judgment.","nfr2")}
+else if(a=="nfr2"){st.nf.b=Math.max(st.nf.b||0,nfd());st.nf.s=t;st.nf.a=[];st.nf.sl=[];save();o.hidden=true;render()}});
+document.addEventListener("change",function(e){var t=e.target;
+if(t.id=="af"&&t.files[0]){var f=t.files[0];idbSet("alarm",f).then(function(){if(FILE)try{URL.revokeObjectURL(FILE)}catch(x){}FILE=URL.createObjectURL(f);st.alm.snd="custom";st.alm.fn=f.name+" ("+(f.size/1048576).toFixed(1)+" MB)";save();render();toast("Alarm sound saved.")}).catch(function(){toast("Could not store that file.","warn")})}
+else if(t.id=="bf"&&t.files[0]){var r=new FileReader();r.onload=function(){readBk(r.result)};r.readAsText(t.files[0]);t.value=""}});
+
+IC.clock="M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2";
+var GR={alpha:"α",beta:"β",gamma:"γ",delta:"δ",epsilon:"ε",theta:"θ",lambda:"λ",mu:"μ",pi:"π",rho:"ρ",sigma:"σ",tau:"τ",phi:"φ",varphi:"φ",omega:"ω",Delta:"Δ",Omega:"Ω",Sigma:"Σ",Phi:"Φ",psi:"ψ",hbar:"ħ",eta:"η",kappa:"κ",nu:"ν",chi:"χ"},SY={cdot:"·",times:"×",le:"≤",ge:"≥",ne:"≠",approx:"≈",to:"→",rightarrow:"→",oplus:"⊕",infty:"∞",int:"∫",sum:"∑",partial:"∂",nabla:"∇",pm:"±",circ:"∘",oint:"∮",angle:"∠"},FNS=" sin cos tan log ln det lim exp max min rank ";
+function conv(s){var i=0;
+function P(end){var o="";while(i<s.length&&s[i]!=end){var a=A();if(!a)continue;var sb="",sp="";while(s[i]=="^"||s[i]=="_"){var t=s[i++],g=B();if(t=="^")sp=g;else sb=g}o+=sb&&sp?"<msubsup>"+a+sb+sp+"</msubsup>":sb?"<msub>"+a+sb+"</msub>":sp?"<msup>"+a+sp+"</msup>":a}return o}
+function B(){while(s[i]==" ")i++;if(s[i]=="{"){i++;var r=P("}");i++;return"<mrow>"+r+"</mrow>"}return A()||""}
+function A(){var c=s[i++];if(c==" "||c=="\n")return"";if(c=="{"){i--;return B()}
+if(c=="\\"){var m=/^[a-zA-Z]+|^./.exec(s.slice(i))[0];i+=m.length;
+if(m=="frac"||m=="dfrac"||m=="tfrac"){var x=B(),y=B();return"<mfrac>"+x+y+"</mfrac>"}
+if(m=="sqrt")return"<msqrt>"+B()+"</msqrt>";
+if(m=="overline")return'<mover accent="true">'+B()+"<mo>‾</mo></mover>";
+if(m=="vec")return'<mover accent="true">'+B()+"<mo>→</mo></mover>";
+if(m=="text"||m=="mathrm"||m=="operatorname"){i++;var j=s.indexOf("}",i),tx=s.slice(i,j);i=j+1;return(m=="operatorname"?"<mi>":"<mtext>")+tx+(m=="operatorname"?"</mi>":"</mtext>")}
+if(m=="begin"){var e0=s.indexOf("}",i),en=s.slice(i+1,e0),en2="\\end{"+en+"}";i=e0+1;var j3=s.indexOf(en2,i),body=s.slice(i,j3);i=j3+en2.length;var L=en[0]=="p"?["(",")"]:en[0]=="v"?["|","|"]:["[","]"];
+return"<mrow><mo>"+L[0]+"</mo><mtable>"+body.split("\\\\").map(function(r){return"<mtr>"+r.split("&").map(function(c2){return"<mtd>"+conv(c2)+"</mtd>"}).join("")+"</mtr>"}).join("")+"</mtable><mo>"+L[1]+"</mo></mrow>"}
+if(GR[m])return"<mi>"+GR[m]+"</mi>";if(SY[m])return"<mo>"+SY[m]+"</mo>";if(FNS.indexOf(" "+m+" ")>=0)return"<mi>"+m+"</mi>";
+if(m==","||m==";"||m=="quad"||m==" "||m=="!")return'<mspace width="0.4em"></mspace>';if(m=="left"||m=="right")return"";return"<mo>"+m+"</mo>"}
+if(/[0-9.]/.test(c)){var n=c;while(/[0-9.]/.test(s[i]||""))n+=s[i++];return"<mn>"+n+"</mn>"}
+if(/[a-zA-Z]/.test(c))return"<mi>"+c+"</mi>";
+return"<mo>"+(c=="<"?"&lt;":c==">"?"&gt;":c=="&"?"&amp;":c)+"</mo>"}
+return P()}
+function tm(s,b){return"<math"+(b?' display="block"':"")+">"+conv(s)+"</math>"}
+function md(s){var L=s.split("\n"),o="",ul=0,pre=0,i,l;
+function inl(x){var M=[];x=x.replace(/\$\$(.+?)\$\$|\$(.+?)\$/g,function(m,a,b){M.push(a?tm(a,1):tm(b));return"\u0001"+(M.length-1)+"\u0002"});x=esc(x).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`(.+?)`/g,"<code>$1</code>");return x.replace(/\u0001(\d+)\u0002/g,function(m,k){return M[k]})}
+for(i=0;i<L.length;i++){l=L[i];
+if(l.slice(0,3)=="```"){o+=pre?"</pre>":"<pre>";pre=!pre;continue}
+if(pre){o+=esc(l)+"\n";continue}
+if(l.slice(0,2)=="- "){if(!ul){o+="<ul>";ul=1}o+="<li>"+inl(l.slice(2))+"</li>";continue}
+if(ul){o+="</ul>";ul=0}
+if(l.slice(0,2)=="# ")o+="<h4>"+esc(l.slice(2))+"</h4>";
+else if(l.slice(0,3)=="Q: "){var q=l.slice(3).split(" ::: ");o+='<details class="qa"><summary>'+inl(q[0])+"</summary><p>"+inl(q[1]||"")+"</p></details>"}
+else if(l.trim())o+="<p>"+inl(l)+"</p>"}
+return o+(ul?"</ul>":"")+(pre?"</pre>":"")}
+var COL=[];(function(){var c,m;document.getElementById("notes").textContent.split("\n").forEach(function(l){if(l.slice(0,3)=="@@ "){c={n:l.slice(3),m:[]};COL.push(c)}else if(l.slice(0,3)=="== "){m={t:l.slice(3),b:[]};c.m.push(m)}else if(m)m.b.push(l)})})();
+D.push(
+{n:"Overhead punches",t:"Boxing",m:"Shoulders, core, conditioning",l:["Guard","Punch up"],f1:2,p:[[97,22,100,38,110,56,104,40,100,70,100,94,100,118],[97,24,100,38,104,18,106,0,100,70,100,94,100,118]],s:["Stand in a boxing stance, fists at your cheeks, knees soft.","Drive one fist straight up above your head, rotating your hips and shoulders, then return it fast.","Alternate arms. Keep your core tight and your chin down."],d:"5 × 20–60 punches",f:"Stay light on your feet. Do not lean back as you punch."},
+{n:"Squat hold",t:"Calisthenics",m:"Quads, glutes, endurance",l:["Hold"],p:[D[3].p[1]],s:["Feet shoulder-width apart, arms out in front.","Sit down until your thighs are parallel to the floor, chest up.","Hold still and breathe steadily for the full time."],d:"60 s",f:"Keep your heels down and your knees over your toes."},
+{n:"Bird-dog",t:"Calisthenics",m:"Core, lower back, balance",l:["Tabletop","Reach"],p:[[132,66,120,72,120,96,120,118,66,76,66,100,44,116],[134,64,120,72,142,70,162,68,66,76,46,78,26,80]],s:["Start on hands and knees, hands under shoulders, knees under hips.","Reach one arm forward and the opposite leg back until both are level with your back.","Hold, then return and switch sides. Keep your hips level."],d:"3 × 10 per side",f:"Imagine a glass of water on your lower back."},
+{n:"Crunch",t:"Calisthenics",m:"Upper abs",l:["Down","Up"],p:[[34,110,50,112,42,98,36,106,88,114,112,88,128,118],[44,94,56,98,50,84,44,88,88,114,112,88,128,118]],s:["Lie on your back with your knees bent and your hands by your head.","Lift your shoulder blades off the floor by curling your ribs toward your hips.","Lower slowly. Do not pull on your neck."],d:"3 × 10",f:"Small, controlled movement beats big swinging reps."},
+{n:"Barbell hold",t:"Barbell",m:"Grip, traps, posture",f1:1,l:["Hold"],p:[D[8].p[0]],s:["Deadlift a light barbell to standing and keep it at your thighs.","Stand tall, shoulders back and down, grip tight.","Hold for the full time, then lower it under control."],d:"1 min",f:"Use a light load. This replaces a dead hang if you have no pull-up bar."},
+{n:"Single-leg balance",t:"Calisthenics",m:"Balance, ankles, core",l:["Stand","Knee lift"],p:[S,[100,22,100,38,100,58,102,76,100,70,100,94,100,118,120,76,116,100]],s:["Stand tall with your hands on your hips and look at a fixed point.","Lift one knee or leg and hold your balance.","Switch sides. Stay tall and keep breathing."],d:"Hold per side",f:"Soft knee on the standing leg. Use a wall nearby at first."},
+{n:"Warrior III",t:"Calisthenics",m:"Balance, hamstrings, glutes",l:["Stand","T-balance"],p:[S,[138,58,124,64,142,62,160,60,90,70,92,94,92,118,60,68,30,64]],s:["Stand on one leg with a soft knee.","Hinge forward and lift the back leg until your body forms a T.","Arms forward or out to the sides. Hold, then switch."],d:"Hold per side",f:"Keep your hips square to the floor."},
+{n:"Side plank",t:"Calisthenics",m:"Obliques, shoulders, core",l:["Hold"],p:[[128,84,118,92,118,112,138,114,84,102,60,108,38,114]],s:["Lie on your side with your elbow under your shoulder.","Lift your hips so your body forms a straight line.","Hold, then switch sides."],d:"Hold per side",f:"Do not let your hips sag."});
+EM[18]=[30,0];EM[19]=[60,60];EM[20]=[45,0];EM[21]=[45,0];EM[22]=[60,60];EM[23]=[0,30];EM[24]=[0,30];EM[25]=[0,30];
+EY=EY.concat(["agi","sta","sta","sta","str","agi","agi","sta"]);
+SES.L=[[3,3,"30 reps"],[0,3,"15+ reps"],[4,3,"30 reps"],[6,3,"15–30 s"]];SES.F=[[20,3,"10 reps per side"],[15,3,"10 reps"],[21,3,"10 reps"],[5,3,"10 reps and a 10-count hold"]];SES.H=[[19,1,"3 min"],[6,1,"2 min"],[22,1,"1 min"]];
+GN.L="Long Story Short";GN.F="Core Foundation";GN.H="3-2-1 Plus";
+function SF(c,b,adj,p,d,e){var r=rj(d);return c=="L"?Math.max(2,3+2*(p.lvl-1)+r):c=="F"?Math.max(2,3+(p.lvl-1)+r):c=="H"?Math.max(1,p.lvl+r):Math.min(e==11?10:6,Math.max(2,b+adj))}
+function xm(y){var l=st.lv,m=1;if(l>=3&&y=="int")m*=1.2;if(l>=5&&(y=="str"||y=="agi"))m*=1.1;if(l>=10&&y=="sta")m*=1.2;if(l>=20)m*=1.1;return m}
+var BAL="Single-leg stand::Stand tall on one leg, hands on hips, eyes on a fixed point.::23::2|Knee-lift hold::Lift one knee to hip height and hold.::23::2|Tree pose::Foot on the inner thigh or calf, hands together.::23::2|Side leg raise::Lift one leg out to the side, torso upright.::-1::2|Back leg raise::Lift one leg behind you, chest up.::-1::2|Heel-to-toe stand::Stand with one foot directly in front of the other.::-1::2|Warrior III::Hinge forward and lift the back leg to form a T.::24::2|Side plank::Stack your feet, lift your hips, straight body line.::25::2|Bird-dog hold::Opposite arm and leg extended, hips level.::20::2|Eyes-closed stand::Single-leg stand with your eyes closed.::23::2|Standing quad hold::Hold your ankle behind you, knees together.::-1::2|Mini squat balance::Single-leg stand, small squat and hold.::-1::2|Knee-to-elbow hold::Single-leg stand, hold the opposite elbow to the knee.::-1::2|Plank leg lift::Plank with one foot lifted off the floor.::-1::2|Star stand::Arms and one leg extended out to the sides.::-1::2|Toe stand::Rise onto both toes and hold.::-1::1|Lunge balance::Hold a low lunge with the back knee hovering.::-1::2|Side lunge hold::Wide stance, bend one knee, keep the other leg straight.::-1::2|Plank arm reach::Plank, lift one arm forward and hold.::-1::2|Single-leg bridge hold::One leg extended, hips high.::-1::2|Hover plank::Tabletop with your knees an inch off the floor.::-1::1|Crescent balance::Single-leg stand, arms overhead, lean slightly.::-1::2|Side kick hold::Hold a straight leg out to the side, foot flexed.::-1::2|Airplane::Warrior III with your arms out to the sides.::24::2|Calf raise hold::Stand on one leg and hold up on your toes.::-1::2|Eagle stand::Cross one leg over the other and hold.::-1::2|Hip circles::Lift one knee, trace slow circles, stay balanced.::-1::2|Boat pose::Sit, lean back, lift your feet and hold a V.::-1::1|Reverse plank::Hands behind you, hips high, body straight.::-1::1|Balance flow::Knee lift, back leg raise, side raise, 10 s each.::23::2".split("|").map(function(x){return x.split("::")});
+var BOSS=["Gatekeeper of Iron","Shade Warden","Stone Giant","Crimson Knight","Frost Monarch"];
+var SKILLS=[[3,"Focus","Study XP +20%"],[5,"Iron Body","Strength and agility XP +10%"],[10,"Second Wind","Stamina XP +20%"],[20,"Monarch’s Will","All XP +10%"]];
+var ACH=[["First step",function(){return Object.keys(st.fin).length>=1}],["Week warrior",function(){return st.best>=7}],["Month marvel",function(){return st.best>=30}],["Bookworm",function(){return st.books.reduce(function(s,b){return s+b.pg},0)>=100}],["Level 10",function(){return st.lv>=10}],["Scholar",function(){return Object.keys(st.cs||{}).length>=10}],["Deep worker",function(){return Object.keys(st.p).filter(function(d){return st.p[d].study>=1}).length>=20}]];
+function hm2(x){x=(x%1440+1440)%1440;return("0"+Math.floor(x/60)).slice(-2)+":"+("0"+x%60).slice(-2)}
+function tmin(t){var a=t.split(":");return+a[0]*60+ +a[1]}
+function colToday(n){var c=((n-1)%5+5)%5,m=Math.floor(Math.max(0,n-1)/5)%4,k=COL[c];return{c:c,m:m,cn:k.n,mt:k.m[m].t}}
+function CH(d){var n=dayNo(d),p=st.prof,a=[],lv=p.lvl,rv=(st.rdy||{})[d];if(n<1||n>TOT()||rv==4)return a;
+var b=Math.floor((n-1)/30)%2,k=(n-1)%30+1,odd=k%2==1,ex=rv==3?.5:1;
+if(b==0){var N=Math.round((20+10*Math.floor((k-1)/6))*(lv==1?.8:1)*ex);
+a.push(odd?{k:"c1",t:"Punch Up: "+N+" punches",s:"5 sets of "+N+" overhead punches, 30 s rest",n:5,e:18,y:"agi",x:15,m:Math.ceil(5*(N*.9+30)/60),r:"ch",cr:{t:"tap",reps:N,rest:30}}:{k:"c1",t:"Punch Up: 2 minutes",s:"Overhead punches, non-stop",n:1,e:18,y:"agi",x:15,m:2,r:"ch",cr:{t:"auto",sec:120}});
+a.push({k:"c2",t:"Epic Hold: "+(odd?"squat":"plank")+" hold",s:"One 60-second hold",n:1,e:odd?19:6,y:"sta",x:10,m:1,r:"ch",cr:{t:"auto",sec:60}})}
+else{var bn=Math.max(1,Math.round((31-k)*(lv==1?.6:lv==2?.8:1)*ex)),B=BAL[k-1],hs=[30,60,120][lv-1],sd=+B[3],fg=+B[2];
+a.push({k:"c1",t:"Burpee Countdown: "+bn,s:"Today’s burpees, scaled to your level",n:1,e:16,y:"sta",x:15,m:Math.max(1,Math.ceil(bn*4/60)),r:"ch",cr:{t:"tap",single:1,reps:bn}});
+a.push({k:"c2",t:"Balance: "+B[0],s:hs+" s"+(sd==2?" per side":""),n:1,e:fg>=0?fg:null,y:"agi",x:10,m:Math.ceil(hs*sd/60),r:"ch",cr:{t:"bal",sec:hs,sides:sd,cue:B[1],name:B[0],fig:fg}})}
+return a}
+function CHP(q){var c=q.cr,P=[],i;
+if(c.t=="tap"&&!c.single){for(i=1;i<=q.n;i++){P.push({t:"tap",min:Math.max(10,Math.round(c.reps*.9)),l:"Punch Up: set "+i+" of "+q.n,e:q.e,set:1,txt:"Do "+c.reps+" punches, alternating arms, driving straight up. Tap Done when finished."});if(i<q.n)P.push({t:"rest",sec:c.rest,l:"Rest",e:q.e,tip:"Shake out your arms and breathe.",nx:"Set "+(i+1)})}}
+else if(c.t=="tap")P.push({t:"tap",min:Math.max(10,c.reps*2),l:q.t,e:q.e,txt:"Do "+c.reps+" burpees in as many sets as you need. Step instead of jumping if it helps. Tap Done when you finish."});
+else if(c.t=="bal"){var fe=c.fig>=0?c.fig:null;for(i=1;i<=c.sides;i++){P.push({t:"auto",sec:c.sec,l:c.name+(c.sides==2?(i==1?" (left)":" (right)"):""),e:fe,txt:c.cue});if(i<c.sides)P.push({t:"rest",sec:10,l:"Switch sides",e:fe,tip:"Take a breath and switch sides.",nx:c.name+" (right)"})}}
+else P.push({t:"auto",sec:c.sec,l:q.t,e:q.e,txt:"Hold good form for the full time."});
+return P}
+function Q(d){var p=st.prof,s=sess(d),n=dayNo(d),T0=topic(n),C0=colToday(Math.max(1,n)),a=[{k:"wake",t:"Arise",s:"Be up by "+p.wake,n:1,y:"sen",x:10,m:2}];
+if(s){a.push({k:"wu",t:"Warm-up",s:"Train at "+ttime()+". Four short drills",n:1,y:"sta",x:10,m:5,r:"wu"});
+s.ex.forEach(function(e){var w=EM[e[0]],wk=e[0]==11?180:(w[1]||40);a.push({k:"e"+e[0],t:D[e[0]].n,s:e[2]+tp(e[0],n)+(e[3]?" · "+e[3]:""),n:e[1],y:EY[e[0]],x:15,e:e[0],r:"ex",m:Math.ceil((e[1]*wk+(e[1]-1)*(e[0]==11?60:rst(e[0],n)))/60)})})}
+else a.push({k:"rest",t:"Active recovery",s:"20 min walk or stretching",n:1,y:"sta",x:10,m:20});
+CH(d).forEach(function(q){a.push(q)});
+a.push({k:"fuel",t:"Fuel plan",s:"Eat your 4 planned meals",n:4,y:"sta",x:10,m:0,r:"fu"},{k:"study",t:"Study period",s:"College: "+C0.cn+" · Bug bounty: "+(T0?T0.t:"free study")+" · "+p.stt+", "+p.sm+" min",n:1,y:"int",x:25,m:p.sm,r:"stu"},{k:"brth",t:"Breathing",s:"5 minutes of box breathing",n:1,y:"int",x:10,m:5,r:"br"},{k:"h2o",t:"Hydration",s:"500 ml cups, 2.5 L total",n:5,y:"sta",x:10,m:5},{k:"read",t:"Read 10 pages",s:"In the Library",n:1,y:"int",x:10,m:15,r:"rd"},{k:"slp",t:"Lights out",s:"3-minute wind-down, in bed by "+p.bed,n:1,y:"sen",x:10,m:3,r:"sl"});return a}
+function arrive(){if(!st.prof)return;var d=tod(),n=dayNo(d),gm="";
+if(st.nf){var dn=nfd(),aw=st.nf.a=st.nf.a||[];[3,7,14,30,60,90,180,365].forEach(function(m){if(dn>=m&&aw.indexOf(m)<0){aw.push(m);gain(30,"sen","Streak milestone: "+m+" days")}});save()}
+if(n>77&&!st.ext){st.ext=1;save();pop("Hidden quest unlocked","[Hidden Quest: <b>The Awakened Path</b>]<br><br>You have reached the end of the first 77 days.<br>The System is not finished with you. Your journey now runs for <b>777 days</b>.<br><small>Reward: +200 XP, +100 gold.</small>",[["Accept","ext"]]);return}
+if(st.arr[d]||n<1||n>TOT())return;
+var pw=Math.ceil(n/7)-1,i;st.gt=st.gt||{};if(n>1&&pw>=1&&!st.gt[pw]){st.gt[pw]=1;var cc=0;for(i=(pw-1)*7;i<pw*7;i++)if(st.fin[addd(st.start,i)])cc++;if(cc>=5){st.gold+=60;gm="<br><br>[Gate cleared: <b>"+BOSS[(pw-1)%BOSS.length]+"</b> defeated. +60 gold]"}else gm="<br><br><small>Last week’s gate was not cleared (it needs 5 cleared days). A new gate opens now.</small>"}
+st.arr[d]=1;save();var qs=Q(d),s=sess(d);pop("Quest arrived","[Daily Quest: <b>"+(s?GN[s.c]:"Quiet Recovery")+"</b> has arrived.]<br><br>Goal: "+qs.length+" tasks, about "+tot(qs)+" minutes.<br><small>WARNING: Failure to complete the daily quest will result in an appropriate penalty.</small>"+gm,[["Accept","ok"]])}
+function hud(){return'<div class="hud"><b>LV '+st.lv+'</b><div class="bar"><i style="width:'+st.xp/need(st.lv)*100+'%"></i></div><span>'+st.gold+' G</span></div>'}
+function dayPlan(d){var p=st.prof,g=Q(d).filter(isg),B=[],cs=tmin(p.cs),ce=tmin(p.ce),tt=tmin(ttime()),wk=tmin(p.wake),bd=tmin(p.bed),mid=Math.round((cs+ce)/2),tm0=Math.max(30,tot(g)),s=sess(d);
+function a(t,m,n,k){B.push({t:t,m:m,n:n,k:k})}
+a(wk,10,"Arise, wash up, first glass of water","wake");a(wk+10,5,"Breathing","brth");a(wk+20,25,"Breakfast","fuel");
+a(cs-30,30,"Travel to class");a(cs,mid-15-cs,"Classes");a(mid-15,45,"Lunch, then 15 pages of reading","read");a(mid+30,ce-mid-30,"Classes");
+a(ce,45,"Travel home, snack, water","h2o");
+a(tt,tm0,"Training: "+(s?GN[s.c]:"Recovery"),g[0]&&g[0].k);
+a(tt+tm0+10,35,"Shower and dinner");a(tmin(p.stt),p.sm,"Study: college and bug bounty","study");
+a(bd-40,15,"Journal and mantra");a(bd-15,10,"Wind-down breathing","slp");a(bd,0,"Lights out");
+return B.filter(function(x){return x.m>=0}).sort(function(x,y){return x.t-y.t})}
+function vDay(){var d=vd||tod(),Q0=Q(d),dn=st.p[d]||{},me=d==tod(),n=new Date(),nw=n.getHours()*60+n.getMinutes(),h='<h2>Schedule</h2><p class="ctr mut" style="margin:-4px 0 12px">Day '+dayNo(d)+' · '+DAYS[new Date(d+"T12:00:00").getDay()]+' · built from your classes, sleep and study time</p>';
+dayPlan(d).forEach(function(b){var q=b.k&&Q0.filter(function(x){return x.k==b.k})[0],ok=q&&(dn[q.k]||0)>=q.n,cur=me&&nw>=b.t&&nw<b.t+Math.max(b.m,1);
+h+='<div class="tr'+(ok?' dn':'')+(cur?' now':'')+'"><div class="tt2">'+hm2(b.t)+'</div><div class="tb2"><b>'+esc(b.n)+'</b><small>'+b.m+' min'+(q?' · '+(q.n>1?'['+(dn[q.k]||0)+' / '+q.n+']':(ok?'done':'to do')):'')+'</small></div>'+(q&&!ok&&me?(q.r?'<button class="ad go" data-a="sq" data-v="'+q.k+'" aria-label="Start">▶</button>':'<button class="ad" data-a="pq" data-v="'+q.k+'" aria-label="Add one">+</button>'):'')+'</div>'});
+return h}
+function wkStat(){var n=Math.max(1,dayNo(tod())),w=Math.ceil(n/7),c=0,i;for(i=(w-1)*7;i<w*7&&i<TOT();i++)if(st.fin[addd(st.start,i)])c++;return{w:w,c:c}}
+function vExtra(){var l=st.lv,w=wkStat(),h=prog0()+win("Weekly gate",'<b>'+BOSS[(w.w-1)%BOSS.length]+'</b><div class="bar hp"><i style="width:'+(100-w.c/7*100)+'%"></i></div><p class="fix">Cleared days this week: '+w.c+' / 7. Five clears defeat the boss for 60 gold.</p>');
+h+=win("Skills",SKILLS.map(function(s){var on=l>=s[0];return'<div class="pc'+(on?'':' dn')+'"><div class="pb"><b>'+s[1]+'</b><small>'+s[2]+' · level '+s[0]+'</small></div><span>'+(on?'active':'locked')+'</span></div>'}).join(""));
+return h+win("Achievements",ACH.map(function(a){return'<span class="bd'+(a[1]()?' on':'')+'">'+a[0]+'</span>'}).join(""))}
+function spark(a,col,w,h){if(a.length<2)return'<p class="fix">Not enough data yet. This fills in as you log and as days pass.</p>';var mn=Math.min.apply(null,a),mx=Math.max.apply(null,a),r=mx-mn||1,pts=a.map(function(v,i){return(6+i*(w-12)/(a.length-1)).toFixed(1)+","+(h-6-(v-mn)/r*(h-12)).toFixed(1)}).join(" ");return'<svg viewBox="0 0 '+w+' '+h+'" class="chs"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2.5"/></svg><p class="fix">From '+a[0]+' to '+a[a.length-1]+'</p>'}
+function vPa(){return vPa0()+chal()}
+function vCol(){var n=Math.max(1,dayNo(tod())),C0=colToday(n),h=win("College today",'<h3>'+esc(C0.cn)+'</h3><p>'+esc(C0.mt)+'</p><button class="b wide" data-a="on" data-v="'+C0.c+'-'+C0.m+'">Open notes</button><p class="fix">Semester 1, 2026 curriculum. One course topic comes up every day, so each module returns every 20 days for revision. Communicative English and the Holistic Development Program have no notes here.</p>');
+COL.forEach(function(c,ci){var ds=0,li=c.m.map(function(m,mi){var ok=(st.cs||{})[ci+"-"+mi];if(ok)ds++;return'<div class="pc'+(ok?' dn':'')+'"><div class="pb"><b>'+esc(m.t)+'</b></div><button class="g" data-a="on" data-v="'+ci+'-'+mi+'">Notes</button></div>'}).join("");h+=win(esc(c.n)+" · "+ds+" / 4 studied",li)});return h}
+function vLearn(){var m=st.lt||"bb";return'<div class="seg">'+[["bb","Bug bounty"],["col","College"],["lib","Library"]].map(function(x){return'<button class="'+(m==x[0]?'on':'')+'" data-a="lt" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>'+(m=="bb"?vBB():m=="col"?vCol():vLb())}
+function nfSlips(){var t=tod();return((st.nf&&st.nf.sl)||[]).filter(function(x){return Math.round((new Date(t+"T12:00:00")-new Date(x+"T12:00:00"))/864e5)<30}).length}
+function vMind(){var nf=st.nf,dn=nf?nfd():0,lim=nf&&nf.lim!=null?nf.lim:2;return win("Breathe and reset",MIND.map(function(m,i){return'<div class="pc"><div class="pb"><b>'+m.t+'</b><small>'+(m.sec?Math.round(m.sec/60)+' min':'About 3 min')+'</small></div><button class="ad go" data-a="mi" data-v="'+i+'" aria-label="Start">▶</button></div>'}).join("")+'<p class="fix">Slow breathing and short meditation lower stress and help you recover between training days.</p>')
++win("No-fap streak",nf?'<div class="stt"><div><b>'+dn+'</b>DAYS</div><div><b>'+Math.max(nf.b||0,dn)+'</b>BEST</div><div><b>'+nfSlips()+' / '+lim+'</b>SLIPS, 30 D</div></div>'+[3,7,14,30,60,90,180,365].map(function(m){return'<span class="bd'+(dn>=m?' on':'')+'">'+m+'</span>'}).join("")+'<div class="row"><button class="b" data-a="mi" data-v="5">Urge toolkit</button><button class="g" data-a="nfr">I slipped</button></div><div class="row"><span class="fix" style="flex:1">Monthly allowance: '+lim+'</span><button class="g" data-a="nfl" data-v="-1">−</button><button class="g" data-a="nfl" data-v="1">+</button></div><label>My protection plan<textarea id="nfp" rows="3" placeholder="My triggers, and what I will do instead"></textarea></label><button class="g wide" data-a="nfp">Save plan</button><label class="ck" style="margin-top:12px"><input type="checkbox" id="nfn"'+(nf.nr?' checked':'')+'> Night reminder 30 minutes before bed</label><p class="fix">Real life is allowed. A slip inside your monthly allowance keeps the streak going. Past the allowance the streak resets and you start again with no judgment. Protect yourself: phone out of bed, no screens in the last half hour, and stay busy at your risky times. If this ever feels out of your control, a counselor or doctor can help.</p>':'<p class="fix">A private streak counter with room for real life, an urge toolkit and milestone XP.</p><button class="b wide" data-a="nfs">Start today</button>')
++win("Journal",'<textarea id="jt" rows="4" placeholder="Three lines: what went well, what was hard, what is next."></textarea><button class="b wide" data-a="jr">Save entry · +10 XP</button>')
++win("Today’s mantra",'<p class="mt">“'+MT[(Math.max(1,dayNo(tod()))-1)%MT.length][1]+'”</p>')}
+function rdBase(title){var s=st.rd=st.rd||{th:"dark",fs:18};s.mode=s.mode||"scroll";var o=$("#rd");o.hidden=false;o.className="rdw "+s.th;
+o.innerHTML='<div class="rdb"><button class="g" data-a="rc">Close</button><b>'+esc(title)+'</b><button class="g" data-a="rm" id="rmb">'+(s.mode=="scroll"?"Scroll":"Pages")+'</button><button class="g" data-a="rt">Theme</button><button class="g" data-a="rf" data-v="-1">A−</button><button class="g" data-a="rf" data-v="1">A+</button></div><div id="rdc" class="rdc" style="font-size:'+s.fs+'px"></div><div class="rdn" id="rdn"></div>';return $("#rdc")}
+function cpUpd(){var c=$("#rdc"),s=$("#cpn");if(s&&c){var w=c.clientWidth||1;s.textContent=(Math.round(c.scrollLeft/w)+1)+" / "+Math.max(1,Math.round(c.scrollWidth/w))}}
+function rdHtml(){var c=$("#rdc"),pg=st.rd.mode=="pages";c.classList.toggle("pg",pg);$("#rdn").innerHTML=pg?'<button class="g" data-a="cp" data-v="-1">◀</button><span id="cpn"></span><button class="g" data-a="cp" data-v="1">▶</button>':"";c.onscroll=cpUpd;c.scrollLeft=0;cpUpd()}
+function rdDoc(h){$("#rdc").innerHTML=h;rdHtml()}
+function pdfStack(){var c=$("#rdc");c.innerHTML="";var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!e.target.dataset.d){e.target.dataset.d=1;var k=+e.target.dataset.p;RP.getPage(k).then(function(pg){var w=c.clientWidth-40,sc=w/pg.getViewport({scale:1}).width,r=window.devicePixelRatio||1,v=pg.getViewport({scale:sc*r}),cv=document.createElement("canvas");cv.width=v.width;cv.height=v.height;cv.style.width=w+"px";cv.style.height=v.height/r+"px";e.target.style.minHeight="";e.target.appendChild(cv);pg.render({canvasContext:cv.getContext("2d"),viewport:v});if(k>(RD.mx||0)){logPg(RD,k-(RD.mx||0));RD.mx=k;save()}})}})},{root:c,rootMargin:"600px"});for(var k=1;k<=RP.numPages;k++){var d=document.createElement("div");d.dataset.p=k;d.style.minHeight="700px";d.style.marginBottom="10px";c.appendChild(d);io.observe(d)}}
+function rdPdf(){var c=$("#rdc"),pg=st.rd.mode=="pages";$("#rdn").innerHTML=pg?'<button class="g" data-a="pp" data-v="-1">◀</button><span id="pn"></span><button class="g" data-a="pp" data-v="1">▶</button>':"";c.classList.remove("pg");if(pg){RPg=RD.last||1;c.innerHTML='<canvas id="pc"></canvas>';pgShow()}else pdfStack()}
+function openRd(id){var b=st.books.filter(function(x){return x.id==id})[0];if(!b)return;RD=b;var c=rdBase(b.t);
+if(b.ty=="pdf"){c.textContent="Opening…";Promise.all([idbGet("pdf"+b.id),ldPdf()]).then(function(r){return pdfjsLib.getDocument({data:r[0]}).promise}).then(function(d){RP=d;if(!b.tot){b.tot=d.numPages;save()}rdPdf()}).catch(function(e){c.textContent="Could not open this file: "+(e&&e.message||e)})}
+else if(b.ty=="txt")idbGet("pdf"+b.id).then(function(t){rdDoc(String(t||"").split(/\n\s*\n/).map(function(x){return"<p>"+esc(x)+"</p>"}).join("")+'<button class="b wide" data-a="rdg">Mark as read: +10 pages</button>')});
+else rdDoc("<h4>"+esc(b.t)+"</h4>"+(NOTES[b.t]||[["Notes","No notes are bundled for this book. Import your own copy from the Library."]]).map(function(x){return"<h3>"+esc(x[0])+"</h3><p>"+esc(x[1])+"</p>"}).join("")+'<p class="fix">These are short study notes written for this app, not the text of the book. Import your own copy to read the full book.</p><button class="b wide" data-a="rdg">Finished the notes: +10 pages</button>')}
+function openNote(ci,mi){var m=COL[ci].m[mi];RD={t:m.t,note:1,ci:ci,mi:mi};rdBase(COL[ci].n+": "+m.t);rdDoc("<h3>"+esc(m.t)+"</h3>"+md(m.b.join("\n"))+'<button class="b wide" data-a="ms">Mark module as studied · +20 XP</button>')}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.dataset.a,v=b.dataset.v,t=tod();
+if(st.hap!==0&&navigator.vibrate)try{navigator.vibrate(8)}catch(x){}
+if(a=="lt"){st.lt=v;save();render()}
+else if(a=="on"){var p=v.split("-");openNote(+p[0],+p[1])}
+else if(a=="rm"){var s=st.rd;s.mode=s.mode=="scroll"?"pages":"scroll";save();$("#rmb").textContent=s.mode=="scroll"?"Scroll":"Pages";if(RD&&RD.ty=="pdf"&&RP)rdPdf();else rdHtml()}
+else if(a=="cp"){var c=$("#rdc");c.scrollBy({left:+v*c.clientWidth,behavior:"smooth"})}
+else if(a=="ms"&&RD&&RD.note){var k=RD.ci+"-"+RD.mi;st.cs=st.cs||{};if(!st.cs[k]){st.cs[k]=1;gain(20,"int","Module studied")}save();toast("Marked as studied.")}
+else if(a=="blg"){st.bl=st.bl||{};st.bl[t]={kg:+$("#lkg").value||null,pu:+$("#lpu").value||null,pl:+$("#lpl").value||null};save();render();toast("Logged.")}
+else if(a=="nfl"){var nf=st.nf;nf.lim=Math.max(0,Math.min(6,(nf.lim==null?2:nf.lim)+ +v));save();render()}
+else if(a=="nfp"){st.nf.pl=$("#nfp").value;save();toast("Plan saved.")}});
+document.addEventListener("change",function(e){var t=e.target;if(t.id=="hp"){st.hap=t.checked?1:0;save()}else if(t.id=="sn2"){st.snd=t.checked?1:0;save()}else if(t.id=="nfn"){st.nf.nr=t.checked;save();sched()}});
+
+var LC={},LK="";
+function LL(w){var key=Object.keys(st.tr).length+"|"+tod();if(key!=LK){LC={};LK=key}if(LC[w]!=null)return LC[w];var L=0,k,i,d,pl,tr,r,t=tod();
+for(k=1;k<w;k++){pl=0;tr=0;for(i=0;i<7;i++){d=addd(st.start,(k-1)*7+i);if(planned(d)){pl++;if(st.tr[d])tr++}}
+r=pl&&addd(st.start,k*7-1)<t?tr/pl:1;if(k%4!=0)L+=r>=.8?1:r>=.5?.5:0}
+return LC[w]=L}
+function scl(s,L){var f=Math.min(1.5,1+.04*L);if(f<1.001)return s;return s.replace(/\d+/g,function(m,o){var a=s.slice(o+m.length);if(/^\s*(min|-count)/.test(a))return m;var v=+m*f;return String(v<20?Math.round(v):Math.round(v/5)*5)})}
+function rst(e,n){var b=EM[e][0];if(!b)return 0;if(e>=26)return 30;var L=Math.max(0,LL(Math.ceil(n/7)));return Math.round(Math.min(120,b+L*(120-b)/8)/5)*5}
+function tp(e,n){if(e==11||e>=26||EM[e][1])return"";var L=LL(Math.ceil(n/7));return L>=8?" · 3 s down, 1 s pause":L>=4?" · 3 s lowering":""}
+function prog0(){var n=Math.max(1,dayNo(tod())),w=Math.ceil(n/7),L=LL(w),f=Math.min(1.5,1+.04*L);return win("Progression",'<div class="stt"><div><b>'+L.toFixed(1)+'</b>LOAD</div><div><b>+'+Math.round((f-1)*100)+'%</b>REPS</div><div><b>'+rst(3,n)+' s</b>REST</div></div><p class="fix">Each week you clear at least 80% of your training sessions, your load rises: more reps and hold time, an extra set every 4 steps, a slower tempo, and longer rests between sets, up to 2 minutes. Clearing 50–79% adds half a step. Less than that holds your level. Every 4th week is lighter. Boxing rounds keep their 1-minute rest.</p>')}
+function chal(){var n=Math.max(1,Math.min(TOT(),dayNo(tod()))),b=Math.floor((n-1)/30);return win("Challenge calendar",'<p class="fix">Days 1–30: Punch Up and Epic Hold. Days 31–60: Burpee Countdown and Perfect Balance. Then the cycle repeats. Today: block '+(b+1)+', '+(b%2?"Burpee Countdown and Perfect Balance":"Punch Up and Epic Hold")+', day '+((n-1)%30+1)+' of 30. Adapted from the Darebee workouts you shared, and scaled to your level. Training days without a boxing session end with a martial arts block. The first 77 days are boxing only. From day 78 it follows the art you choose under System: boxing, karate, MMA, taekwondo, Muay Thai or a mix. These are solo fitness drills. Learn real technique from a qualified instructor, and keep kicks low until you are warmed up.</p>')}
+
+var G=[100,26,100,42,110,58,118,48,100,74,100,96,100,118];
+D.push(
+{n:"Reverse punch (gyaku-zuki)",t:"Martial",m:"Karate: core, shoulders, hip rotation",f1:2,l:["Chamber","Punch"],p:[[112,28,108,46,98,64,102,74,100,78,124,98,126,118,83,98,66,116],[114,28,110,46,132,48,156,46,100,78,124,98,126,118,83,98,66,116]],s:["Stand in a front stance: front knee bent over the ankle, back leg straight, feet about shoulder-width apart.","Start with both fists at your hips. Drive the rear fist straight out while turning your hip and pulling the other fist back to your hip.","Breathe out sharply on the punch, snap it back, and keep your shoulders relaxed."],d:"3 × 10 per side",f:"Do not lock your elbow. Keep your back heel down."},
+{n:"Front kick (mae-geri)",t:"Martial",m:"Karate: hips, quads, balance",f1:2,l:["Guard","Chamber","Kick"],p:[G.concat([100,96,100,118]),G.concat([124,74,106,96]),G.concat([132,78,162,80])],s:["Stand in a fighting guard with your weight on the back leg.","Lift your front knee to hip height, then snap your lower leg straight out, striking with the ball of the foot.","Pull the leg back quickly and set it down in front. Keep your hips square and your guard up."],d:"3 × 10 per leg",f:"Keep kicks at belt height until your hips are loose."},
+{n:"Low block (gedan barai)",t:"Martial",m:"Karate: shoulders, core, timing",f1:2,l:["Cocked","Sweep down"],p:[[112,28,108,46,112,40,124,28,100,78,124,98,126,118,83,98,66,116],[112,28,108,46,118,66,134,90,100,78,124,98,126,118,83,98,66,116]],s:["Stand in a front stance with one fist by the opposite ear.","Sweep that arm down and across your body to guard your lower stomach.","Return and repeat on the other side."],d:"3 × 10 per side",f:"Turn your hips into each block."},
+{n:"Roundhouse kick (dollyeo chagi)",t:"Martial",m:"Taekwondo and Muay Thai: hips, core, balance",f1:2,l:["Guard","Chamber","Kick"],p:[G.concat([100,96,100,118]),G.concat([124,72,116,92]),[90,30,95,46,88,62,84,50,100,78,98,98,96,118,132,66,164,58]],s:["Take a guard stance with your weight on the back leg.","Lift your knee and pivot on the supporting foot so your heel turns away from the target.","Swing the lower leg around to hit with the top of the foot or the shin, then retract and reset."],d:"3 × 10 per leg",f:"Rotate the supporting foot fully. Start with belt-height kicks."},
+{n:"Side kick (yeop chagi)",t:"Martial",m:"Taekwondo: hips, glutes, balance",f1:2,l:["Guard","Kick"],p:[G.concat([100,96,100,118]),[84,40,90,54,84,70,88,58,100,80,98,100,96,118,130,80,162,80]],s:["Stand side-on to an imaginary target with your hands up.","Chamber the knee, then drive your heel out in a straight line as you lean away.","Retract the leg along the same line and return to guard."],d:"3 × 8 per leg",f:"Strike with the edge of the heel, not the toes. Rest a hand on a wall at first."},
+{n:"Knee strike (khao)",t:"Martial",m:"Muay Thai: hip flexors, core, conditioning",f1:2,l:["Guard","Knee"],p:[G.concat([100,96,100,118]),[104,26,102,42,116,52,128,46,100,72,100,96,100,118,124,64,112,84]],s:["Take a Muay Thai guard and picture a pad at chest height.","Pull your hands down and forward and drive your knee up and forward, pushing your hips through.","Lower with control and alternate legs."],d:"3 × 10 per leg",f:"Stay on the ball of the standing foot and keep your back straight."},
+{n:"Hip escape (shrimp)",t:"Martial",m:"Grappling: hips, core, mobility",l:["Flat","Hips up"],p:[[34,111,50,114,64,115,82,115,84,114,116,88,128,118],[34,111,50,114,64,115,82,115,86,98,118,84,128,118]],s:["Lie on your back with your knees bent and your feet flat.","Push off your feet to lift your hips and slide them sideways, turning onto one shoulder.","Return to flat and repeat to the other side. This is a basic ground movement."],d:"3 × 10 per side",f:"Move from your hips, not your arms."},
+{n:"Sprawl",t:"Martial",m:"Grappling: hips, shoulders, conditioning",l:["Stand","Sprawl"],p:[S,[140,86,128,96,138,108,148,116,96,104,74,110,52,116]],s:["Stand in an athletic stance with your hands up.","Kick both feet back and drop your hips to the floor, chest up and arms ready.","Push up and return to your feet fast. Step instead of jumping if your knees hurt."],d:"3 × 8",f:"Land with your hips low and your weight on your forearms."});
+for(var mi=26;mi<=33;mi++)EM[mi]=[30,0];
+EY=EY.concat(["agi","agi","agi","agi","agi","str","sta","sta"]);
+var MAN=["Karate","Taekwondo","Muay Thai","Grappling"],MA=[[[26,3,"10 punches per side"],[27,3,"10 kicks per leg"],[28,3,"10 blocks per side"]],[[27,2,"10 kicks per leg"],[29,3,"10 kicks per leg"],[30,3,"8 kicks per leg"]],[[31,3,"10 knees per leg"],[29,3,"10 kicks per leg"],[26,2,"15 punches per side"]],[[33,3,"8 sprawls"],[32,3,"10 per side"],[6,2,"45 s"]]];
+D.push(
+{n:"Lead hook",t:"Boxing",m:"Boxing: shoulders, core, hip rotation",f1:2,l:["Guard","Hook"],p:[[106,28,102,44,114,60,124,44,100,74,114,96,122,118,92,96,78,118],[108,28,106,44,126,46,122,34,100,74,114,96,122,118,92,96,78,118]],s:["Take your boxing stance with both fists at your cheeks.","Pivot your lead foot and rotate your hips and shoulders, swinging the lead fist in a tight arc at head height with the elbow level with the fist.","Let the rotation drive the punch, then snap back to guard."],d:"3 × 10 per side",f:"Keep the elbow in line with the fist and do not swing wide."},
+{n:"Slip and roll",t:"Boxing",m:"Boxing: head movement, legs, timing",f1:2,l:["Guard","Slip"],p:[[106,28,102,44,114,60,124,44,100,74,114,96,122,118,92,96,78,118],[96,40,100,56,110,72,118,62,100,76,114,98,122,118,92,98,78,118]],s:["Stay in guard with your knees soft.","Bend your knees and move your head a few centimetres off the centre line, as if a punch passed over your shoulder.","Return to guard and slip to the other side. Keep your eyes forward and your hands up."],d:"3 × 10 per side",f:"Move from the knees and hips, not by bending at the waist."});
+EM[34]=[30,0];EM[35]=[30,0];EY=EY.concat(["agi","agi"]);
+var ARTS={box:["Boxing",[[11,2,"3 min rounds"],[34,3,"10 hooks per side"],[35,3,"10 slips per side"]]],karate:["Karate",MA[0]],tkd:["Taekwondo",MA[1]],mt:["Muay Thai",MA[2]],mma:["MMA",[[31,3,"10 knees per leg"],[29,2,"10 kicks per leg"],[33,3,"8 sprawls"],[32,2,"10 per side"]]]};
+function artFor(n){var a=(st.prof&&st.prof.art)||"box";if(n<=77)return"box";if(a=="mix")return["karate","tkd","mt","mma"][n%4];return ARTS[a]?a:"box"}
+function MAB(n,p,x){var A=ARTS[artFor(n)],ex=x||0;return A[1].map(function(e){return[e[0],Math.max(2,e[1]+p.lvl-2+ex),scl(e[2],LL(Math.ceil(n/7))),A[0]]})}
+function vArt(){var a=st.prof.art||"box",lock=dayNo(tod())<=77;return win("Martial art",'<p class="fix">'+(lock?'Your first 77 days are boxing only. Your choice starts on day 78 and then applies to every training day.':'Your choice shapes the martial arts block on your training days and your conditioning day.')+'</p><div class="row" style="flex-wrap:wrap">'+[["box","Boxing"],["karate","Karate"],["mma","MMA"],["tkd","Taekwondo"],["mt","Muay Thai"],["mix","Mixed"]].map(function(x){return'<button class="'+(a==x[0]?'b':'g')+'" data-a="art" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>')}
+document.addEventListener("click",function(e){var b=e.target.closest('[data-a="art"]');if(!b)return;st.prof.art=b.dataset.v;save();$("#o").hidden=true;render();toast("Martial art set to "+{box:"Boxing",karate:"Karate",mma:"MMA",tkd:"Taekwondo",mt:"Muay Thai",mix:"Mixed"}[b.dataset.v]+(dayNo(tod())<=77?". It starts on day 78.":"."))});
+
+$("nav").innerHTML=[["q","home","Quests"],["sc","clock","Day"],["pa","chart","Path"],["st","user","Status"],["lr","book","Learn"],["fu","fuel","Fuel"],["mi","mind","Mind"],["sy","bell","System"]].map(function(x){return'<button data-a="tab" data-v="'+x[0]+'" aria-label="'+x[2]+'">'+ic(x[1])+"</button>"}).join("");
+load();LD=tod();dailyCheck();build();render();sched();setTimeout(arrive,1800);setInterval(clock,1000);
+</script>
+</body>
+</html>
