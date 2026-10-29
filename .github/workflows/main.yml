@@ -1,0 +1,65 @@
+name: Convert to App (release APK)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install and bundle the PDF reader
+        run: |
+          npm install
+          mkdir -p www/lib
+          cp node_modules/pdfjs-dist/build/pdf.min.js node_modules/pdfjs-dist/build/pdf.worker.min.js www/lib/
+
+      - name: Convert the web app into an Android project
+        run: |
+          npx cap add android
+          sed -i 's#<application#<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/><uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/><application#' android/app/src/main/AndroidManifest.xml
+
+      - name: Version number higher than every earlier build
+        run: |
+          CODE=$(( $(date -u +%s) / 60 ))
+          sed -i "s/versionCode 1/versionCode $CODE/" android/app/build.gradle
+          sed -i "s/versionName \"1.0\"/versionName \"2.$CODE\"/" android/app/build.gradle
+          grep -q "versionCode $CODE" android/app/build.gradle || { echo "versionCode not set"; exit 1; }
+
+      - name: Copy web files into the app
+        run: npx cap sync android
+
+      - name: Build release APK
+        run: |
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleRelease
+
+      - name: Align and sign with the same key as the old app
+        run: |
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          UNSIGNED=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          "$BT/zipalign" -p -f 4 "$UNSIGNED" aligned.apk
+          "$BT/apksigner" sign --ks debug.keystore --ks-pass pass:android --key-pass pass:android --ks-key-alias androiddebugkey --out arise-77.apk aligned.apk
+          "$BT/apksigner" verify --print-certs arise-77.apk | head -3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arise-77-app
+          path: arise-77.apk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-${{ github.run_number }}
+          name: Arise 77 app ${{ github.run_number }}
+          files: arise-77.apk
