@@ -1,0 +1,16 @@
+{
+  "name": "arise-77",
+  "version": "2.0.0",
+  "private": true,
+  "dependencies": {
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/local-notifications": "^6.1.0",
+    "pdfjs-dist": "3.11.174",
+    "@capacitor/filesystem": "^6.0.0",
+    "@capacitor/share": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.0"
+  }
+}
